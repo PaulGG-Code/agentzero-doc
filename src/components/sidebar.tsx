@@ -4,6 +4,8 @@ import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ChevronLeft, ChevronRight, Menu } from 'lucide-react';
+import { useTheme } from 'next-themes';
+import Image from 'next/image';
 import clsx from 'clsx';
 import { cn } from '@/lib/utils';
 
@@ -15,6 +17,8 @@ type SidebarContextType = {
   maxWidth: number;
   toggleSidebar: () => void;
   showIconsOnCollapse: boolean;
+  logo?: React.ReactNode;
+  className?: string;
 };
 
 const SidebarContext = React.createContext<SidebarContextType | undefined>(
@@ -445,21 +449,19 @@ export function NestedLink({
 
 export function SidebarTrigger() {
   const { toggleSidebar, side, isOpen } = useSidebar();
-
   return (
     <button
       onClick={toggleSidebar}
-      className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-      aria-label="Toggle sidebar"
+      className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
     >
-      {isOpen ? (
-        side === 'left' ? (
-          <ChevronLeft className="h-5 w-5" />
-        ) : (
-          <ChevronRight className="h-5 w-5" />
-        )
+      {side === 'left' && !isOpen ? (
+        <Menu />
+      ) : side === 'left' && isOpen ? (
+        <ChevronLeft />
+      ) : side === 'right' && !isOpen ? (
+        <Menu />
       ) : (
-        <Menu className="h-5 w-5" />
+        <ChevronRight />
       )}
     </button>
   );

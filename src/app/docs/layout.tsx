@@ -29,6 +29,7 @@ import { ModeToggle } from '@/components/mode-toggle';
 import { Button } from '@/components/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import ScrollToAnchor from '@/components/scroll-to-anchor';
+import { useTheme } from 'next-themes';
 
 export default function DocsLayout({
   children,
@@ -37,6 +38,8 @@ export default function DocsLayout({
 }) {
   const router = useRouter();
   const isMobile = useIsMobile();
+  const { theme } = useTheme();
+
   return (
     <SidebarLayout>
       <SidebarProvider
@@ -51,10 +54,14 @@ export default function DocsLayout({
               logo={
                 <Image
                   alt="logo"
-                  className={'h-auto w-aut dark:invert'}
-                  width={100}
-                  height={100}
-                  src={`/logos/pinedocs.png`}
+                  className={'h-8 w-8'}
+                  width={32}
+                  height={32}
+                  src={
+                    theme === 'dark'
+                      ? '/logos/agent-zero-logo.png'
+                      : '/logos/agent-zero-light-logo.png'
+                  }
                 />
               }
             />
