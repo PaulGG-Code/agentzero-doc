@@ -35,7 +35,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onAnimationComplete }) => {
         <motion.span variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>N</motion.span>
         <motion.span variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>T</motion.span>
         <motion.span
-          className="text-6xl md:text-8xl mx-2 text-primary"
+          className="text-6xl md:text-8xl mx-2"
           variants={{
             hidden: { opacity: 0, scale: 0.5 },
             visible: {
