@@ -1,0 +1,24 @@
+{
+  "ignorePatterns": [
+    {
+      "pattern": "^/docs/"
+    },
+    {
+      "pattern": "^/res/"
+    },
+    {
+      "pattern": "^#"
+    },
+    {
+      "pattern": "^http://localhost"
+    }
+  ],
+  "httpHeaders": [
+    {
+      "urls": ["https://github.com"],
+      "headers": {
+        "User-Agent": "Mozilla/5.0 (compatible; markdown-link-check)"
+      }
+    }
+  ]
+}
