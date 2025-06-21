@@ -76,6 +76,32 @@ html {
     @apply border-border;
   }
 
+  /* Ensure 3D transforms work properly */
+  html {
+    scroll-behavior: smooth;
+    transform-style: preserve-3d;
+  }
+
+  body {
+    transform-style: preserve-3d;
+  }
+
+  /* Optimize 3D animations */
+  .book-page-transition {
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    will-change: transform;
+  }
+
+  /* Ensure smooth animations on all devices */
+  @media (prefers-reduced-motion: no-preference) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
   :root {
     /* Base Theme - Light Mode */
     --background: 0 0% 100%;

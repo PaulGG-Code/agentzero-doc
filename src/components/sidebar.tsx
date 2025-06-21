@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { ChevronLeft, ChevronRight, Menu } from 'lucide-react';
 import clsx from 'clsx';
 import { cn } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
 
 type SidebarContextType = {
   isOpen: boolean;
@@ -297,6 +298,7 @@ interface SidebarMenuItemProps {
   defaultOpen?: boolean;
   alwaysOpen?: boolean;
   isCollapsable?: boolean;
+  className?: string;
 }
 
 export function SidebarMenuItem({
@@ -308,18 +310,11 @@ export function SidebarMenuItem({
   defaultOpen = false,
   alwaysOpen = false,
   isCollapsable = false,
+  className,
+  ...props
 }: SidebarMenuItemProps) {
-  const { isOpen, isMobile, setIsOpen } = useSidebar();
+  const { isMobile, setIsOpen } = useSidebar();
   const [isExpanded, setIsExpanded] = React.useState(defaultOpen || alwaysOpen);
-  const pathname = usePathname();
-
-  // Determine if this item is active based on the current path
-  const isActive =
-    propIsActive !== undefined
-      ? propIsActive
-      : href
-        ? pathname === href || pathname.startsWith(href)
-        : false;
 
   React.useEffect(() => {
     // If alwaysOpen is true, ensure the menu stays open
@@ -328,85 +323,77 @@ export function SidebarMenuItem({
     }
   }, [alwaysOpen]);
 
-  const handleClick = (e: React.MouseEvent) => {
-    if (children && !href && !alwaysOpen) {
-      e.preventDefault();
-      setIsExpanded((prev) => !prev);
-    }
-    // Close the sidebar if in mobile view when a link is clicked
-    if (isMobile && href) {
-      setIsOpen(false); // Close the sidebar
+  const toggleOpen = () => {
+    if (isCollapsable) {
+      setIsExpanded(!isExpanded);
     }
   };
-  const content = (
-    <>
-      <div className="flex items-center">
-        {icon && (
-          <span
-            className={`${isActive ? 'font-medium' : 'text-gray-500 dark:text-gray-400'} ${isOpen ? 'mr-3' : ''}`}
-          >
-            {icon}
-          </span>
-        )}
-        {isOpen && (
-          <span
-            className={`${isActive ? 'bg-accent text-accent-foreground' : 'text-gray-700 dark:text-gray-300'}`}
-          >
-            {label}
-          </span>
-        )}
-      </div>
-      {isOpen && children && !alwaysOpen && isCollapsable && (
-        <span className="ml-auto">
-          <ChevronRight
-            className={`h-4 w-4 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
-          />
-        </span>
-      )}
-    </>
-  );
+
+  const handleLinkClick = () => {
+    // Close the sidebar if in mobile view when a link is clicked
+    if (isMobile && href) {
+      setIsOpen(false);
+    }
+  };
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className={cn('w-full', className)}
+      {...props}
+    >
       {href ? (
         <Link
           href={href}
-          className={`
-            flex items-center justify-between w-full p-2 rounded-md
-            ${
-              isActive
-                ? 'bg-accent text-accent-foreground'
-                : 'hover:bg-accent text-gray-700 dark:text-gray-300'
-            }
-            ${!isOpen ? 'justify-center' : ''}
-          `}
-          onClick={handleClick}
+          onClick={handleLinkClick}
+          className={cn(
+            'flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-sidebar-active hover:text-sidebar-active-foreground',
+            propIsActive && 'bg-sidebar-active text-sidebar-active-foreground'
+          )}
         >
-          {content}
+          {icon && <span className="h-4 w-4">{icon}</span>}
+          <span className="flex-1 text-left">{label}</span>
         </Link>
       ) : (
         <button
-          className={`
-            flex items-center justify-between w-full p-2 rounded-md
-            ${
-              isActive
-                ? 'bg-sidebar text-blue-500'
-                : 'hover:bg-accent text-gray-700 dark:text-gray-300'
-            }
-            ${!isOpen ? 'justify-center' : ''}
-          `}
-          onClick={handleClick}
+          onClick={toggleOpen}
+          className={cn(
+            'flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-sidebar-active hover:text-sidebar-active-foreground',
+            isCollapsable && 'cursor-pointer',
+            !isCollapsable && 'cursor-default'
+          )}
         >
-          {content}
+          {icon && <span className="h-4 w-4">{icon}</span>}
+          <span className="flex-1 text-left">{label}</span>
+          {isCollapsable && (
+            <motion.div
+              animate={{ rotate: isExpanded ? 90 : 0 }}
+              transition={{ duration: 0.2 }}
+              className="h-4 w-4"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </motion.div>
+          )}
         </button>
       )}
-
-      {isOpen && (isExpanded || alwaysOpen) && children && (
-        <div className="ml-6 mt-1 pl-3 border-l border-border space-y-1">
-          {children}
-        </div>
-      )}
-    </div>
+      <AnimatePresence>
+        {isExpanded && isCollapsable && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            <div className="ml-4 mt-2 space-y-1">
+              {children}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
 
