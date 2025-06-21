@@ -170,7 +170,9 @@ export function Sidebar({
           )}
           style={{ maxWidth: `${maxWidth}px` }}
           {...props}
-        />
+        >
+          {children}
+        </aside>
       </>
     );
   }
@@ -445,12 +447,15 @@ export function NestedLink({
   );
 }
 
-export function SidebarTrigger() {
+export function SidebarTrigger({ className }: { className?: string }) {
   const { toggleSidebar, side, isOpen } = useSidebar();
   return (
     <button
       onClick={toggleSidebar}
-      className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
+      className={cn(
+        'p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700',
+        className
+      )}
     >
       {side === 'left' && !isOpen ? (
         <Menu />

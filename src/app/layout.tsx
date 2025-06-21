@@ -32,7 +32,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <SplashProvider>
-            {children}
+          {children}
           </SplashProvider>
         </ThemeProvider>
       </body>

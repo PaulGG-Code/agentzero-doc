@@ -120,12 +120,14 @@ export default function DocsLayout({
           </SidebarFooter>
         </Sidebar>
         <MainContent>
-          <Header className="justify-between py-2">
-            <div className="flex items-center gap-4">
-              <SidebarTrigger />
+          <Header className="justify-between p-2 md:py-2">
+            <div className="flex items-center gap-2 md:gap-4">
+              <div className="block md:hidden">
+                <SidebarTrigger />
+              </div>
               <h1 className="text-xl font-bold">Documentation</h1>
             </div>
-            <div className="flex gap-2 items-center pr-0 lg:pr-8">
+            <div className="flex gap-1 md:gap-2 items-center pr-0 lg:pr-8">
               <SearchDialog searchData={allDocs} />
               <ModeToggle />
               <Button
@@ -147,7 +149,7 @@ export default function DocsLayout({
             <Suspense>
               <ScrollToAnchor />
             </Suspense>
-          <main className="overflow-auto p-6">{children}</main>
+          <main className="overflow-auto p-4 md:p-6">{children}</main>
         </MainContent>
       </SidebarProvider>
     </SidebarLayout>

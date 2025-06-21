@@ -40,7 +40,7 @@ const Toc: React.FC<TocProps> = ({ doc }) => {
   };
 
   return (
-    <aside className="fixed right-0 hidden xl:block w-64 p-6 top-16 border-l border-[var(--color-border)] h-[calc(100vh-4rem)] overflow-y-auto">
+    <aside className="fixed right-0 hidden md:block w-64 p-6 top-16 border-l border-[var(--color-border)] h-[calc(100vh-4rem)] overflow-y-auto">
       <div className="top-0 pb-2">
         <h2 className="font-semibold text-lg">On this page</h2>
       </div>
