@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./public/logos/agent-zero-logo.jpg"  align="center" alt="agent zero logo" width="200px">
+  <img src="https://raw.githubusercontent.com/PaulGG-Code/agentzero-doc/refs/heads/main/public/logos/%20agent-zero-logo.jpg"  align="center" alt="agent zero logo" width="200px">
   <h1 align="center">Agent Zero Documentation</h1>
   <p align="center">
    This is the official documentation website for Agent Zero, a project by PaulGG-Code.
