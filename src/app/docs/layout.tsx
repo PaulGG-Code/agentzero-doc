@@ -108,9 +108,14 @@ export default function DocsLayout({
               }
             </UserAvatar>
             <div className="flex flex-col">
-              <span className="text-sm font-medium text-gray-900 dark:text-white">
+              <a
+                href="https://fr.linkedin.com/in/paul-gedeon"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-medium text-gray-900 dark:text-white hover:underline"
+              >
                 PaulGG-Code
-              </span>
+              </a>
             </div>
           </SidebarFooter>
         </Sidebar>
