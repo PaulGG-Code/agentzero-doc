@@ -10,9 +10,6 @@
   <a href="https://github.com/PaulGG-Code/agentzero-doc/actions/workflows/ci.yml">
     <img src="https://github.com/PaulGG-Code/agentzero-doc/actions/workflows/ci.yml/badge.svg" alt="CI Status">
   </a>
-  <a href="https://github.com/PaulGG-Code/agentzero-doc/actions/workflows/deploy.yml">
-    <img src="https://github.com/PaulGG-Code/agentzero-doc/actions/workflows/deploy.yml/badge.svg" alt="Deploy Status">
-  </a>
   <a href="https://github.com/PaulGG-Code/agentzero-doc/actions/workflows/content-validation.yml">
     <img src="https://github.com/PaulGG-Code/agentzero-doc/actions/workflows/content-validation.yml/badge.svg" alt="Content Validation">
   </a>
