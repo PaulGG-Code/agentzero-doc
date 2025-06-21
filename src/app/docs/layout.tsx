@@ -149,7 +149,7 @@ export default function DocsLayout({
             <Suspense>
               <ScrollToAnchor />
             </Suspense>
-          <main className="overflow-auto p-4 md:p-6">{children}</main>
+          <main className="overflow-auto p-4 md:p-6 max-w-4xl mx-auto w-full">{children}</main>
         </MainContent>
       </SidebarProvider>
     </SidebarLayout>

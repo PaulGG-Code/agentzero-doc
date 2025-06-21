@@ -8,6 +8,37 @@ module.exports = {
   theme: {
     extend: {
       // Your theme extensions
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: 'none',
+            color: 'inherit',
+            a: {
+              color: 'inherit',
+              textDecoration: 'underline',
+              textDecorationOffset: '2px',
+            },
+            strong: {
+              color: 'inherit',
+            },
+            code: {
+              color: 'inherit',
+            },
+            h1: {
+              color: 'inherit',
+            },
+            h2: {
+              color: 'inherit',
+            },
+            h3: {
+              color: 'inherit',
+            },
+            h4: {
+              color: 'inherit',
+            },
+          },
+        },
+      },
     },
   },
   screens: {
@@ -18,5 +49,5 @@ module.exports = {
     xl: '1280px',
     '2xl': '1536px',
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/typography')],
 };

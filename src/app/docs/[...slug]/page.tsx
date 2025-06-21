@@ -39,12 +39,14 @@ const DocsPage = async ({ params }: { params: tParams }) => {
 
   if (!doc) notFound();
   return (
-    <div className="flex">
-      <div className="flex-1">
+    <div className="flex flex-col lg:flex-row gap-6">
+      <div className="flex-1 min-w-0">
         <Mdx code={doc.body.code} />
       </div>
-      <aside className="w-64">
-      <Toc doc={doc} />
+      <aside className="lg:w-64 lg:flex-shrink-0">
+        <div className="lg:sticky lg:top-6">
+          <Toc doc={doc} />
+        </div>
       </aside>
     </div>
   );
