@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { ChevronLeft, ChevronRight, Menu } from 'lucide-react';
 import clsx from 'clsx';
 import { cn } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
 
 type SidebarContextType = {
   isOpen: boolean;
@@ -297,6 +298,7 @@ interface SidebarMenuItemProps {
   defaultOpen?: boolean;
   alwaysOpen?: boolean;
   isCollapsable?: boolean;
+  className?: string;
 }
 
 export function SidebarMenuItem({
@@ -308,6 +310,8 @@ export function SidebarMenuItem({
   defaultOpen = false,
   alwaysOpen = false,
   isCollapsable = false,
+  className,
+  ...props
 }: SidebarMenuItemProps) {
   const { isOpen, isMobile, setIsOpen } = useSidebar();
   const [isExpanded, setIsExpanded] = React.useState(defaultOpen || alwaysOpen);
@@ -338,75 +342,57 @@ export function SidebarMenuItem({
       setIsOpen(false); // Close the sidebar
     }
   };
-  const content = (
-    <>
-      <div className="flex items-center">
-        {icon && (
-          <span
-            className={`${isActive ? 'font-medium' : 'text-gray-500 dark:text-gray-400'} ${isOpen ? 'mr-3' : ''}`}
-          >
-            {icon}
-          </span>
-        )}
-        {isOpen && (
-          <span
-            className={`${isActive ? 'bg-accent text-accent-foreground' : 'text-gray-700 dark:text-gray-300'}`}
-          >
-            {label}
-          </span>
-        )}
-      </div>
-      {isOpen && children && !alwaysOpen && isCollapsable && (
-        <span className="ml-auto">
-          <ChevronRight
-            className={`h-4 w-4 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
-          />
-        </span>
-      )}
-    </>
-  );
+
+  const toggleOpen = () => {
+    if (isCollapsable) {
+      setIsExpanded(!isExpanded);
+    }
+  };
 
   return (
-    <div>
-      {href ? (
-        <Link
-          href={href}
-          className={`
-            flex items-center justify-between w-full p-2 rounded-md
-            ${
-              isActive
-                ? 'bg-accent text-accent-foreground'
-                : 'hover:bg-accent text-gray-700 dark:text-gray-300'
-            }
-            ${!isOpen ? 'justify-center' : ''}
-          `}
-          onClick={handleClick}
-        >
-          {content}
-        </Link>
-      ) : (
-        <button
-          className={`
-            flex items-center justify-between w-full p-2 rounded-md
-            ${
-              isActive
-                ? 'bg-sidebar text-blue-500'
-                : 'hover:bg-accent text-gray-700 dark:text-gray-300'
-            }
-            ${!isOpen ? 'justify-center' : ''}
-          `}
-          onClick={handleClick}
-        >
-          {content}
-        </button>
-      )}
-
-      {isOpen && (isExpanded || alwaysOpen) && children && (
-        <div className="ml-6 mt-1 pl-3 border-l border-border space-y-1">
-          {children}
-        </div>
-      )}
-    </div>
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className={cn('w-full', className)}
+      {...props}
+    >
+      <button
+        onClick={toggleOpen}
+        className={cn(
+          'flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-sidebar-active hover:text-sidebar-active-foreground',
+          isCollapsable && 'cursor-pointer',
+          !isCollapsable && 'cursor-default'
+        )}
+      >
+        {icon && <span className="h-4 w-4">{icon}</span>}
+        <span className="flex-1 text-left">{label}</span>
+        {isCollapsable && (
+          <motion.div
+            animate={{ rotate: isExpanded ? 90 : 0 }}
+            transition={{ duration: 0.2 }}
+            className="h-4 w-4"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </motion.div>
+        )}
+      </button>
+      <AnimatePresence>
+        {isExpanded && isCollapsable && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            <div className="ml-4 mt-2 space-y-1">
+              {children}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
 

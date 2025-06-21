@@ -30,6 +30,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import ScrollToAnchor from '@/components/scroll-to-anchor';
 import { useTheme } from 'next-themes';
 import { useMounted } from '@/hooks/use-mounted';
+import { BookPageTransition } from '@/components/book-page-transition';
 
 export default function DocsLayout({
   children,
@@ -149,7 +150,11 @@ export default function DocsLayout({
             <Suspense>
               <ScrollToAnchor />
             </Suspense>
-          <main className="overflow-auto p-4 md:p-6 max-w-4xl mx-auto w-full">{children}</main>
+          <main className="overflow-auto p-4 md:p-6 max-w-4xl mx-auto w-full">
+            <BookPageTransition>
+              {children}
+            </BookPageTransition>
+          </main>
         </MainContent>
       </SidebarProvider>
     </SidebarLayout>
