@@ -22,7 +22,7 @@ import {
   UserAvatar,
   NestedLink,
 } from '@/components/sidebar';
-import { Github } from 'lucide-react';
+import { Github, Globe } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/header';
 import { ModeToggle } from '@/components/mode-toggle';
@@ -30,6 +30,7 @@ import { Button } from '@/components/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import ScrollToAnchor from '@/components/scroll-to-anchor';
 import { useTheme } from 'next-themes';
+import { useMounted } from '@/hooks/use-mounted';
 
 export default function DocsLayout({
   children,
@@ -39,6 +40,7 @@ export default function DocsLayout({
   const router = useRouter();
   const isMobile = useIsMobile();
   const { theme } = useTheme();
+  const isMounted = useMounted();
 
   return (
     <SidebarLayout>
@@ -52,17 +54,23 @@ export default function DocsLayout({
           <SidebarHeader>
             <SidebarHeaderLogo
               logo={
-                <Image
-                  alt="logo"
-                  className={'h-8 w-8'}
-                  width={32}
-                  height={32}
-                  src={
-                    theme === 'dark'
-                      ? '/logos/agent-zero-logo.png'
-                      : '/logos/agent-zero-light-logo.png'
-                  }
-                />
+                <>
+                  {isMounted ? (
+                    <Image
+                      alt="logo"
+                      className={'h-8 w-8'}
+                      width={32}
+                      height={32}
+                      src={
+                        theme === 'dark'
+                          ? '/logos/agent-zero-logo.png'
+                          : '/logos/agent-zero-light-logo.png'
+                      }
+                    />
+                  ) : (
+                    <div className="h-8 w-8" />
+                  )}
+                </>
               }
             />
 
@@ -122,7 +130,14 @@ export default function DocsLayout({
               <ModeToggle />
               <Button
                 onClick={() =>
-                    router.push('https://github.com/frdel/agent-zero')
+                  window.open('https://www.agent-zero.ai/', '_blank')
+                }
+              >
+                <Globe className="h-[1.2rem] w-[1.2rem] transition-all" />
+              </Button>
+              <Button
+                onClick={() =>
+                  window.open('https://github.com/frdel/agent-zero', '_blank')
                 }
               >
                 <Github className="h-[1.2rem] w-[1.2rem] transition-all" />
