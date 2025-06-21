@@ -61,7 +61,7 @@ jobs:
       - name: Check Image References
         run: |
           # Check if all referenced images exist
-          find docs -name "*.mdx" -exec grep -o '/res/[^)]*' {} \; | sort | uniq | while read -r img; do
+          find docs -name "*.mdx" -exec grep -o '/res/[^"'\''\s)]*\.[a-zA-Z0-9]\+' {} \; | sort | uniq | while read -r img; do
             if [ ! -f "public$img" ]; then
               echo "❌ Missing image: $img"
               exit 1
