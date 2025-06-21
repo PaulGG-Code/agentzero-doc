@@ -313,17 +313,9 @@ export function SidebarMenuItem({
   className,
   ...props
 }: SidebarMenuItemProps) {
-  const { isOpen, isMobile, setIsOpen } = useSidebar();
+  const { isMobile, setIsOpen } = useSidebar();
   const [isExpanded, setIsExpanded] = React.useState(defaultOpen || alwaysOpen);
   const pathname = usePathname();
-
-  // Determine if this item is active based on the current path
-  const isActive =
-    propIsActive !== undefined
-      ? propIsActive
-      : href
-        ? pathname === href || pathname.startsWith(href)
-        : false;
 
   React.useEffect(() => {
     // If alwaysOpen is true, ensure the menu stays open
@@ -332,20 +324,16 @@ export function SidebarMenuItem({
     }
   }, [alwaysOpen]);
 
-  const handleClick = (e: React.MouseEvent) => {
-    if (children && !href && !alwaysOpen) {
-      e.preventDefault();
-      setIsExpanded((prev) => !prev);
-    }
-    // Close the sidebar if in mobile view when a link is clicked
-    if (isMobile && href) {
-      setIsOpen(false); // Close the sidebar
-    }
-  };
-
   const toggleOpen = () => {
     if (isCollapsable) {
       setIsExpanded(!isExpanded);
+    }
+  };
+
+  const handleLinkClick = () => {
+    // Close the sidebar if in mobile view when a link is clicked
+    if (isMobile && href) {
+      setIsOpen(false);
     }
   };
 
@@ -357,26 +345,40 @@ export function SidebarMenuItem({
       className={cn('w-full', className)}
       {...props}
     >
-      <button
-        onClick={toggleOpen}
-        className={cn(
-          'flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-sidebar-active hover:text-sidebar-active-foreground',
-          isCollapsable && 'cursor-pointer',
-          !isCollapsable && 'cursor-default'
-        )}
-      >
-        {icon && <span className="h-4 w-4">{icon}</span>}
-        <span className="flex-1 text-left">{label}</span>
-        {isCollapsable && (
-          <motion.div
-            animate={{ rotate: isExpanded ? 90 : 0 }}
-            transition={{ duration: 0.2 }}
-            className="h-4 w-4"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </motion.div>
-        )}
-      </button>
+      {href ? (
+        <Link
+          href={href}
+          onClick={handleLinkClick}
+          className={cn(
+            'flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-sidebar-active hover:text-sidebar-active-foreground',
+            propIsActive && 'bg-sidebar-active text-sidebar-active-foreground'
+          )}
+        >
+          {icon && <span className="h-4 w-4">{icon}</span>}
+          <span className="flex-1 text-left">{label}</span>
+        </Link>
+      ) : (
+        <button
+          onClick={toggleOpen}
+          className={cn(
+            'flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-sidebar-active hover:text-sidebar-active-foreground',
+            isCollapsable && 'cursor-pointer',
+            !isCollapsable && 'cursor-default'
+          )}
+        >
+          {icon && <span className="h-4 w-4">{icon}</span>}
+          <span className="flex-1 text-left">{label}</span>
+          {isCollapsable && (
+            <motion.div
+              animate={{ rotate: isExpanded ? 90 : 0 }}
+              transition={{ duration: 0.2 }}
+              className="h-4 w-4"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </motion.div>
+          )}
+        </button>
+      )}
       <AnimatePresence>
         {isExpanded && isCollapsable && (
           <motion.div
