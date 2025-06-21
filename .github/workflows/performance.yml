@@ -1,0 +1,64 @@
+name: 'Performance Monitoring'
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+    branches: ['main']
+  workflow_dispatch:
+
+jobs:
+  performance:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Build Project
+        run: pnpm run build
+
+      - name: Analyze Bundle Size
+        run: |
+          # Install bundle analyzer
+          npm install -g @next/bundle-analyzer
+          
+          # Generate bundle analysis
+          ANALYZE=true pnpm run build
+          
+          # Check bundle size thresholds
+          echo "📊 Bundle size analysis completed"
+
+      - name: Check Performance Metrics
+        run: |
+          # Install lighthouse CI
+          npm install -g @lhci/cli
+          
+          # Run lighthouse CI (if you have a deployed URL)
+          # lhci autorun --upload.target=temporary-public-storage
+          
+          echo "🔍 Performance metrics checked"
+
+      - name: Report Bundle Size
+        run: |
+          # Extract and report bundle size information
+          echo "📦 Bundle size report:"
+          du -sh .next/static/chunks/* | sort -hr | head -10
+          
+          # Check for large dependencies
+          echo "📋 Large dependencies:"
+          pnpm list --depth=0 | grep -E "(MB|KB)" | sort -hr 

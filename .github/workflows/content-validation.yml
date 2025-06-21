@@ -1,0 +1,69 @@
+name: 'Content Validation'
+
+on:
+  push:
+    paths:
+      - 'docs/**'
+      - 'src/**'
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'src/**'
+  workflow_dispatch:
+
+jobs:
+  validate-content:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Build Content
+        run: pnpm run build:content
+
+      - name: Check for Broken Links
+        run: |
+          # Install markdown-link-check if not available
+          npm install -g markdown-link-check
+          
+          # Check all MDX files for broken links
+          find docs -name "*.mdx" -exec markdown-link-check {} \;
+
+      - name: Validate MDX Syntax
+        run: |
+          # Check if all MDX files can be parsed
+          pnpm run build:content
+          
+          # Check for common MDX issues
+          find docs -name "*.mdx" -exec sh -c '
+            echo "Checking $1..."
+            if ! node -e "require(\"@mdx-js/mdx\").compile(require(\"fs\").readFileSync(\"$1\", \"utf8\"))" 2>/dev/null; then
+              echo "❌ MDX syntax error in $1"
+              exit 1
+            fi
+          ' _ {} \;
+
+      - name: Check Image References
+        run: |
+          # Check if all referenced images exist
+          find docs -name "*.mdx" -exec grep -o '/res/[^)]*' {} \; | sort | uniq | while read -r img; do
+            if [ ! -f "public$img" ]; then
+              echo "❌ Missing image: $img"
+              exit 1
+            fi
+          done 
