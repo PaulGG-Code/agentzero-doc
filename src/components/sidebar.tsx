@@ -315,7 +315,6 @@ export function SidebarMenuItem({
 }: SidebarMenuItemProps) {
   const { isMobile, setIsOpen } = useSidebar();
   const [isExpanded, setIsExpanded] = React.useState(defaultOpen || alwaysOpen);
-  const pathname = usePathname();
 
   React.useEffect(() => {
     // If alwaysOpen is true, ensure the menu stays open
