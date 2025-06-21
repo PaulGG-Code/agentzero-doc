@@ -111,9 +111,6 @@ export default function DocsLayout({
               <span className="text-sm font-medium text-gray-900 dark:text-white">
                 PaulGG-Code
               </span>
-              <span className="text-xs text-gray-500 dark:text-gray-400">
-                paulg.ics@gmail.com
-              </span>
             </div>
           </SidebarFooter>
         </Sidebar>
