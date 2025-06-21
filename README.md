@@ -6,6 +6,24 @@
   </p>
 </p>
 
+<p align="center">
+  <a href="https://github.com/PaulGG-Code/agentzero-doc/actions/workflows/ci.yml">
+    <img src="https://github.com/PaulGG-Code/agentzero-doc/actions/workflows/ci.yml/badge.svg" alt="CI Status">
+  </a>
+  <a href="https://github.com/PaulGG-Code/agentzero-doc/actions/workflows/deploy.yml">
+    <img src="https://github.com/PaulGG-Code/agentzero-doc/actions/workflows/deploy.yml/badge.svg" alt="Deploy Status">
+  </a>
+  <a href="https://github.com/PaulGG-Code/agentzero-doc/actions/workflows/content-validation.yml">
+    <img src="https://github.com/PaulGG-Code/agentzero-doc/actions/workflows/content-validation.yml/badge.svg" alt="Content Validation">
+  </a>
+  <a href="https://github.com/PaulGG-Code/agentzero-doc/actions/workflows/security.yml">
+    <img src="https://github.com/PaulGG-Code/agentzero-doc/actions/workflows/security.yml/badge.svg" alt="Security">
+  </a>
+  <a href="https://github.com/PaulGG-Code/agentzero-doc/actions/workflows/performance.yml">
+    <img src="https://github.com/PaulGG-Code/agentzero-doc/actions/workflows/performance.yml/badge.svg" alt="Performance">
+  </a>
+</p>
+
 ## About This Project
 
 This repository contains the source code for the Agent Zero documentation website. It is built with Next.js, Tailwind CSS, and Contentlayer to provide a fast, modern, and easily maintainable documentation experience.
