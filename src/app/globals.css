@@ -177,6 +177,40 @@ html {
     @apply bg-background text-foreground;
     font-family: Arial, Helvetica, sans-serif, var(--font-geist-mono);
   }
+
+  /* Consistent typography for documentation */
+  .mdx {
+    @apply text-base leading-7;
+  }
+
+  .mdx h1,
+  .mdx h2,
+  .mdx h3,
+  .mdx h4,
+  .mdx h5,
+  .mdx h6 {
+    @apply font-semibold tracking-tight;
+  }
+
+  .mdx p,
+  .mdx ul,
+  .mdx ol,
+  .mdx blockquote {
+    @apply max-w-prose;
+  }
+
+  /* Responsive text sizing */
+  @media (min-width: 768px) {
+    .mdx {
+      @apply text-lg;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .mdx {
+      @apply text-base;
+    }
+  }
 }
 
 @layer utilities {
