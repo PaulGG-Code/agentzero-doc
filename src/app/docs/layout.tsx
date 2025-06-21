@@ -37,7 +37,6 @@ export default function DocsLayout({
 }: {
   children: ReactNode;
 }) {
-  const router = useRouter();
   const isMobile = useIsMobile();
   const { theme } = useTheme();
   const isMounted = useMounted();

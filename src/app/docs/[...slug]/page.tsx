@@ -1,7 +1,6 @@
 import { allDocs } from 'contentlayer/generated';
 import { notFound } from 'next/navigation';
 import { Mdx } from '@/components/mdx-components';
-import Breadcrumb from '@/components/bread-crumb';
 import Toc from '@/components/toc';
 
 type tParams = Promise<{ slug: string[] }>;

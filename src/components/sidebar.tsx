@@ -4,8 +4,6 @@ import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ChevronLeft, ChevronRight, Menu } from 'lucide-react';
-import { useTheme } from 'next-themes';
-import Image from 'next/image';
 import clsx from 'clsx';
 import { cn } from '@/lib/utils';
 

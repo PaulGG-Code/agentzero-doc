@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
 
 interface Heading {
   level: number;
@@ -16,7 +15,6 @@ interface TocProps {
 }
 
 const Toc: React.FC<TocProps> = ({ doc }) => {
-  const pathname = usePathname();
   const [currentId, setCurrentId] = useState('');
 
   useEffect(() => {
