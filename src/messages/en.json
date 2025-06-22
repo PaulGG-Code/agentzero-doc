@@ -1,0 +1,37 @@
+{
+  "navigation": {
+    "documentation": "Documentation",
+    "gettingStarted": "Getting Started",
+    "guides": "Guides",
+    "advanced": "Advanced"
+  },
+  "sidebar": {
+    "welcome": "Welcome",
+    "quickStart": "Quick Start",
+    "installation": "Installation",
+    "usageGuide": "Usage Guide",
+    "architecture": "Architecture",
+    "cudaDockerSetup": "CUDA Docker Setup",
+    "mcpServerSetup": "MCP Server Setup",
+    "tunnelFeature": "Tunnel Feature",
+    "troubleshooting": "Troubleshooting",
+    "contributing": "Contributing"
+  },
+  "header": {
+    "documentation": "Documentation",
+    "search": "Search documentation...",
+    "visitWebsite": "Visit Website",
+    "viewGithub": "View on GitHub"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "notFound": "Page not found",
+    "backToHome": "Back to home"
+  },
+  "language": {
+    "en": "English",
+    "fr": "Français",
+    "switchLanguage": "Switch language"
+  }
+}

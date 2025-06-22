@@ -1,0 +1,268 @@
+---
+title: 'Guide d''utilisation'
+description: 'Un guide pour explorer les scénarios d''utilisation et de configuration d''Agent Zero.'
+date: 2024-07-25
+---
+
+# Guide d'utilisation
+Ce guide explore les scénarios d'utilisation et de configuration d'Agent Zero. Vous pouvez considérer cela comme un guide de référence post-installation.
+
+![Message utilitaire avec solutions](/res/memory-man.png)
+
+## Opérations de base
+Agent Zero fournit plusieurs opérations de base via son interface :
+
+### Redémarrer le framework
+Le bouton Redémarrer vous permet de redémarrer rapidement le framework Agent Zero sans utiliser le terminal :
+
+![Redémarrer le framework](/res/ui-restarting.png)
+
+* Cliquez sur le bouton "Redémarrer" dans la barre latérale
+* Une notification bleue apparaîtra indiquant "Redémarrage..."
+* Une fois terminé, un message de succès vert "Redémarré" sera affiché
+* Le framework se réinitialisera tout en conservant votre historique de chat et contexte actuels
+
+<Note type="tip">
+Utilisez la fonction Redémarrer quand vous voulez :
+- Réinitialiser le framework si vous rencontrez un comportement inattendu
+- Réinitialiser le système quand les agents deviennent non réactifs
+</Note>
+
+### Boutons d'action
+Situés sous la boîte de saisie du chat, Agent Zero fournit un ensemble de boutons d'action pour un contrôle et une visibilité améliorés :
+
+![Boutons d'action](/res/ui-actions.png)
+#### Contrôle du flux de chat
+* **Pause/Reprendre Agent :** Bouton bascule pour mettre en pause et reprendre le flux de chat
+  - Cliquez pour mettre en pause les opérations d'agent en cours
+  - Change en "Reprendre Agent" quand mis en pause
+  - Cliquez à nouveau pour reprendre le flux de chat et l'exécution de commandes
+
+#### Gestion des connaissances et fichiers
+* **Importer des connaissances :** Importer des fichiers externes dans la base de connaissances de l'agent
+  - Supporte les formats `.txt`, `.pdf`, `.csv`, `.html`, `.json`, et `.md`
+  - Les fichiers sont stockés dans `\knowledge\custom\main`
+  - Un message de succès confirme l'importation réussie
+  - Voir [connaissances](/docs/architecture#connaissances) pour plus de détails
+
+### Navigateur de fichiers : Gérer les fichiers dans l'environnement Agent Zero
+  - Télécharger de nouveaux fichiers et dossiers
+  - Télécharger des fichiers (cliquez sur le nom de fichier) ou dossiers (comme archives zip)
+  - Supprimer des fichiers et dossiers
+  - Naviguer dans les répertoires en utilisant le bouton "Haut"
+  - Support pour le renommage de fichiers et la recherche à venir
+  - Voir la section [Navigateur de fichiers](#navigateur-de-fichiers) pour les fonctionnalités détaillées
+
+#### Débogage et surveillance
+* **Contexte :** Voir la fenêtre de contexte complète envoyée au LLM
+  - Inclut les prompts système
+  - Montre le contexte de conversation actuel
+  - Affiche les instructions et paramètres actifs
+
+![Contexte](/res/ui-context.png)
+
+### Historique :
+Accéder à l'historique de chat au format JSON
+  - Voir la conversation comme traitée par le LLM
+  - Utile pour le débogage et la compréhension du comportement de l'agent
+
+![Historique](/res/ui-history.png)
+
+* **Nudge :** Redémarrer le dernier processus de l'agent
+  - Utile quand les agents deviennent non réactifs
+  - Réessaie la dernière opération
+  - Aide à récupérer des états bloqués
+
+![Nudge](/res/ui-nudge.png)
+
+<Note type="tip">
+Utilisez les boutons Contexte et Historique pour comprendre comment l'agent interprète vos instructions et déboguer tout comportement inattendu.
+</Note>
+
+### Pièces jointes
+Agent Zero supporte les pièces jointes directes dans l'interface de chat pour des opérations de fichiers transparentes :
+
+#### Joindre des fichiers
+* Cliquez sur l'icône de pièce jointe (📎) sur le côté gauche de la boîte de saisie du chat
+* Sélectionnez un ou plusieurs fichiers à joindre
+* Aperçu des fichiers joints avant l'envoi :
+  - Les noms de fichiers sont affichés avec leurs types (HTML, PDF, JPG, etc.)
+  - Les images montrent des miniatures quand disponibles
+  - Les fichiers sont listés dans la zone de saisie du chat en attente d'être envoyés
+
+![Pièces jointes](/res/ui-attachments.png)
+
+#### Travailler avec les fichiers joints
+* Les fichiers peuvent être référencés directement dans vos messages
+* Agent Zero peut :
+  - Traiter les fichiers joints
+  - Déplacer les fichiers vers des répertoires spécifiques
+  - Effectuer des opérations sur plusieurs fichiers simultanément
+  - Confirmer les opérations de fichiers réussies avec des réponses détaillées
+
+![Travailler avec les pièces jointes](/res/ui-attachments-2.png)
+
+<Note type="tip">
+Quand vous travaillez avec plusieurs fichiers, vous pouvez les joindre tous à la fois puis donner des instructions sur ce qu'il faut en faire. L'agent les traitera par lot tout en vous tenant informé du progrès.
+</Note>
+
+## Utilisation des outils
+La puissance d'Agent Zero vient de sa capacité à utiliser des [outils](/docs/architecture#outils). Voici comment les exploiter efficacement :
+
+- **Comprendre les outils :** Agent Zero inclut des outils par défaut comme les connaissances (alimentées par SearXNG), le contenu de pages web, l'exécution de code et la communication. Comprenez les capacités de ces outils et comment les invoquer.
+
+## Exemple d'utilisation des outils : Recherche web et exécution de code
+Disons que vous voulez qu'Agent Zero effectue des tâches d'analyse financière. Voici un prompt possible :
+
+> Veuillez être un analyste financier professionnel. Trouvez la tendance du prix Bitcoin/USD du mois dernier et faites un graphique dans votre environnement. Le graphique doit avoir des points clés mis en évidence correspondant aux dates des principales nouvelles sur la cryptomonnaie. Utilisez l'outil 'knowledge_tool' pour trouver le prix et les nouvelles, et l'outil 'code_execution_tool' pour effectuer le reste du travail.
+
+Agent Zero pourrait alors :
+
+1. Utiliser l'outil `knowledge_tool` pour interroger une source fiable pour le prix Bitcoin et pour les nouvelles sur la cryptomonnaie comme demandé.
+2. Extraire le prix des résultats de recherche et sauvegarder les nouvelles, en extrayant leurs dates et l'impact possible sur le prix.
+3. Utiliser l'outil `code_execution_tool` pour exécuter un script Python qui effectue la création du graphique et la mise en évidence des points clés, en utilisant les données extraites et les dates des nouvelles comme entrées.
+4. Retourner le graphique final que vous trouverez dans `/work_dir`, en répondant à l'utilisateur avec l'outil `response_tool`.
+
+<Note>
+La première exécution de l'outil `code_execution_tool` peut prendre un moment car il télécharge et construit l'image Docker Agent Zero. Les exécutions suivantes seront plus rapides.
+</Note>
+
+Cet exemple démontre comment combiner plusieurs outils pour accomplir une tâche d'analyse. En maîtrisant l'ingénierie des prompts et l'utilisation des outils, vous pouvez débloquer le plein potentiel d'Agent Zero pour résoudre des problèmes complexes.
+
+## Coopération multi-agents
+Une des fonctionnalités uniques d'Agent Zero est la coopération multi-agents.
+
+* **Créer des sous-agents :** Les agents peuvent créer des sous-agents pour déléguer des sous-tâches. Cela aide à gérer la complexité et distribuer la charge de travail.
+* **Communication :** Les agents peuvent communiquer entre eux, partageant des informations et coordonnant des actions. Le prompt système et l'historique des messages jouent un rôle clé dans guider cette communication.
+* **Hiérarchie :** Agent Zero utilise une [structure hiérarchique](/docs/architecture#hiérarchie-et-communication-des-agents), avec des agents supérieurs déléguant des tâches aux subordonnés. Cela permet une résolution de problèmes structurée et une allocation efficace des ressources.
+
+![](/res/physics.png)
+![](/res/physics-2.png)
+
+## Ingénierie des prompts
+L'ingénierie efficace des prompts est cruciale pour tirer le meilleur parti d'Agent Zero. Voici quelques conseils et techniques :
+
+* **Soyez clair et spécifique :** Énoncez clairement votre résultat souhaité. Plus vous êtes spécifique, mieux Agent Zero peut comprendre et satisfaire votre demande. Évitez le langage vague ou ambigu.
+* **Fournissez du contexte :** Si nécessaire, fournissez des informations de fond ou du contexte pour aider l'agent à mieux comprendre la tâche. Cela pourrait inclure des détails pertinents, des contraintes ou le format souhaité pour la réponse.
+* **Décomposez les tâches complexes :** Pour les tâches complexes, décomposez-les en sous-tâches plus petites et plus gérables. Cela facilite le raisonnement de l'agent à travers le problème et la génération d'une solution.
+* **Raffinement itératif :** N'attendez pas des résultats parfaits dès la première tentative. Expérimentez avec différents prompts, affinez vos instructions basées sur les réponses de l'agent, et itérez jusqu'à ce que vous atteigniez le résultat souhaité. Pour accomplir une tâche de développement d'application web full-stack, par exemple, vous pourriez avoir besoin d'itérer pendant quelques heures pour un succès à 100%.
+
+## Interface vocale
+Agent Zero fournit à la fois des capacités Text-to-Speech (TTS) et Speech-to-Text (STT) pour une interaction vocale naturelle :
+
+### Text-to-Speech
+Activer les réponses vocales des agents :
+* Basculez l'interrupteur "Parole" dans la section Préférences de la barre latérale
+* Les agents utiliseront le synthétiseur vocal intégré de votre système pour parler leurs messages
+* Cliquez sur le bouton "Arrêter la parole" au-dessus de la zone de saisie pour arrêter immédiatement toute parole en cours
+
+![TTS Arrêter la parole](/res/ui-tts-stop-speech.png)
+
+- L'interface permet aux utilisateurs d'arrêter la parole à tout moment si une réponse est trop longue ou s'ils souhaitent intervenir pendant la conversation.
+
+Le TTS utilise une interface vocale standard fournie par les navigateurs modernes, qui peut sembler robotique mais est efficace et ne nécessite pas de modèles d'IA complexes. Cela assure une faible latence et des réponses rapides sur diverses plateformes, y compris les appareils mobiles.
+
+<Note type="tip">
+La fonctionnalité Text-to-Speech est excellente pour :
+- Le multitâche tout en recevant des réponses d'agents
+- Les fins d'accessibilité
+- Créer une expérience plus interactive
+</Note>
+
+### Speech-to-Text
+Envoyer des messages vocaux aux agents en utilisant le modèle Whisper d'OpenAI (ne nécessite pas de clé API OpenAI !) :
+
+1. Cliquez sur le bouton microphone dans la zone de saisie pour commencer l'enregistrement
+2. La couleur du bouton indique le statut actuel :
+   - Gris : Inactif
+   - Rouge : Écoute
+   - Vert : Enregistrement
+   - Bleu-vert : Attente
+   - Cyan (pulsant) : Traitement
+
+Les utilisateurs peuvent ajuster des paramètres tels que le seuil de silence et la durée du message avant l'envoi pour optimiser leur expérience d'interaction.
+
+Configurez les paramètres STT dans la page Paramètres :
+* **Taille du modèle :** Choisissez entre Base (74M, Anglais) ou d'autres modèles
+  - Note : Seuls les modèles Large et Turbo supportent plusieurs langues
+* **Code de langue :** Définissez votre langue préférée (par exemple, 'en', 'fr', 'it', 'cz')
+* **Détection de silence :**
+  - Seuil : Ajuster la sensibilité (les valeurs plus basses sont plus sensibles)
+  - Durée : Définir combien de temps le silence doit durer avant de terminer l'enregistrement
+  - Timeout : Définir le temps d'attente maximum avant de fermer le microphone
+
+![Paramètres Speech to Text](/res/ui-settings-5-speech-to-text.png)
+
+<Note type="important">
+Toutes les fonctionnalités STT et TTS fonctionnent localement dans le conteneur Docker,
+assurant qu'aucune donnée n'est transmise aux serveurs externes ou APIs OpenAI. Cela
+améliore la confidentialité de l'utilisateur tout en maintenant la fonctionnalité.
+</Note>
+
+### Expressions mathématiques
+Agent Zero supporte KaTeX pour une belle composition mathématique :
+
+* **Math en ligne :** Utilisez des dollars simples `$...$` pour les expressions en ligne
+  - Exemple : Tapez `L'aire d'un cercle est $A = πr^2$`
+  - S'affiche comme : L'aire d'un cercle est $A = πr^2$
+
+* **Math d'affichage :** Utilisez des dollars doubles `$$...$$` pour les équations d'affichage centrées
+  - Exemple : Tapez `$$F = G\frac{m_1m_2}{r^2}$$`
+  - S'affiche comme une équation centrée
+
+![KaTeX](/res/ui-katex-1.png)
+
+* **Mathématiques complexes :** Supporte la syntaxe KaTeX complète pour :
+  - Fractions, exposants et racines
+  - Matrices et tableaux
+  - Lettres grecques et symboles mathématiques
+  - Intégrales, sommations et limites
+  - Alignements et équations mathématiques
+
+![Affichage KaTeX](/res/ui-katex-2.png)
+
+<Note type="tip">
+Quand vous demandez à l'agent de résoudre des problèmes mathématiques, il répondra automatiquement en utilisant le formatage KaTeX pour des expressions mathématiques claires et professionnelles.
+</Note>
+
+### Navigateur de fichiers
+Agent Zero fournit une interface de navigateur de fichiers puissante pour gérer votre espace de travail :
+
+#### Aperçu de l'interface
+- **Barre de navigation** : Montre le chemin de répertoire actuel avec le bouton "Haut" pour le répertoire parent
+- **Liste de fichiers** : Affiche les fichiers et répertoires avec des informations clés :
+  - Nom (triable)
+  - Taille en octets
+  - Horodatage de dernière modification
+- **Icônes d'action** : Chaque fichier/répertoire a :
+  - Bouton de téléchargement
+  - Bouton de suppression (avec confirmation)
+
+![Navigateur de fichiers](/res/ui-file-browser.png)
+
+#### Fonctionnalités
+- **Navigation de répertoires** :
+  - Cliquez sur les répertoires pour y entrer
+  - Utilisez le bouton "Haut" pour aller au répertoire parent
+  - Le chemin actuel toujours visible pour le contexte
+
+<Note>
+Le navigateur de fichiers permet à l'utilisateur d'aller dans le dossier racine d'Agent Zero si vous cliquez sur le bouton `Haut`, mais le répertoire de travail des agents sera toujours `/work_dir`
+</Note>
+
+- **Opérations de fichiers** :
+  - Créer de nouveaux fichiers et répertoires
+  - Supprimer des fichiers et répertoires existants
+  - Télécharger des fichiers vers votre système local
+  - Télécharger des fichiers depuis votre système local
+- **Informations de fichiers** :
+  - Indicateurs visuels pour les types de fichiers (dossiers, fichiers de code, documents)
+  - Informations de taille au format lisible par l'homme
+  - Horodatages de dernière modification
+- **Opérations en lot** :
+  - Télécharger plusieurs fichiers simultanément
+  - Sélectionner et gérer plusieurs fichiers à la fois
+
+<Note type="tip">
+Le navigateur de fichiers s'intègre parfaitement avec les capacités d'Agent Zero. Vous pouvez référencer des fichiers directement dans vos conversations, et l'agent peut vous aider à gérer, modifier et organiser vos fichiers.
+</Note> 

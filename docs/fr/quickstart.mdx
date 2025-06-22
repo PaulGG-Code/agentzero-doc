@@ -1,0 +1,62 @@
+---
+title: 'Démarrage rapide'
+description: 'Une introduction rapide à l''utilisation d''Agent Zero.'
+date: 2024-07-25
+---
+
+# Démarrage rapide
+Ce guide fournit une introduction rapide à l'utilisation d'Agent Zero. Nous couvrirons le lancement de l'interface web, le démarrage d'un nouveau chat et l'exécution d'une tâche simple.
+
+## Lancement de l'interface Web
+1. Assurez-vous d'avoir Agent Zero installé et votre environnement configuré correctement (référez-vous au [Guide d'installation](/docs/installation) si nécessaire).
+2. Ouvrez un terminal dans le répertoire Agent Zero et activez votre environnement conda (si vous en utilisez un).
+3. Exécutez la commande suivante :
+
+```bash
+python run_ui.py
+```
+
+4. Un message similaire à celui-ci apparaîtra dans votre terminal, indiquant que l'interface Web fonctionne :
+
+![](/res/flask_link.png)
+
+5. Ouvrez votre navigateur web et naviguez vers l'URL affichée dans le terminal (généralement `http://127.0.0.1:50001`). Vous devriez voir l'interface Web Agent Zero.
+
+![Nouveau Chat](/res/ui_newchat1.png)
+
+<Note type="tip">
+Comme vous pouvez le voir, l'interface Web a quatre boutons distincts pour une gestion facile des chats :
+`Nouveau Chat`, `Réinitialiser Chat`, `Sauvegarder Chat`, et `Charger Chat`.
+Les chats peuvent être sauvegardés et chargés individuellement au format `json` et sont stockés dans le
+répertoire `/tmp/chats`.
+</Note>
+
+![Gestion des Chats](/res/ui_chat_management.png)
+
+## Exécution d'une tâche simple
+Demandons à Agent Zero de télécharger une vidéo YouTube. Voici comment :
+
+1. Tapez "Télécharge une vidéo YouTube pour moi" dans le champ de saisie du chat et appuyez sur Entrée ou cliquez sur le bouton d'envoi.
+
+2. Agent Zero traitera votre demande. Vous verrez ses "pensées" et les actions qu'il prend affichées dans l'interface. Il trouvera une solution par défaut déjà existante, qui implique l'utilisation de l'`outil d'exécution de code` pour exécuter un script Python simple pour effectuer la tâche.
+
+3. L'agent vous demandera ensuite l'URL de la vidéo YouTube que vous voulez télécharger.
+
+## Exemple d'interaction
+Voici un exemple de ce que vous pourriez voir dans l'interface Web à l'étape 3 :
+![1](/res/image-24.png)
+
+## Prochaines étapes
+Maintenant que vous avez exécuté une tâche simple, vous pouvez expérimenter avec des demandes plus complexes. Essayez de demander à Agent Zero de :
+
+* Effectuer des calculs
+* Rechercher des informations sur le web
+* Exécuter des commandes shell
+* Explorer des tâches de développement web
+* Créer ou modifier des fichiers
+
+<Note type="tip">
+Le [Guide d'utilisation](/docs/usage) fournit des informations plus approfondies sur l'utilisation des
+diverses fonctionnalités d'Agent Zero, y compris l'ingénierie des prompts, l'utilisation des outils et la
+coopération multi-agents.
+</Note> 

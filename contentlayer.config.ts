@@ -9,11 +9,25 @@ import { ComputedFields } from 'contentlayer2/source-files';
 const computedFields: ComputedFields = {
   url: {
     type: 'string',
-    resolve: (post: any) => `/docs/${post._raw.flattenedPath}`,
+    resolve: (post: any) => {
+      const path = post._raw.flattenedPath;
+      // Check if the path starts with a language code (fr/)
+      if (path.startsWith('fr/')) {
+        return `/fr/docs/${path.substring(3)}`; // Remove 'fr/' prefix
+      }
+      return `/en/docs/${path}`; // Add 'en/' prefix for English
+    },
   },
   slug: {
     type: 'string',
     resolve: (doc: any) => doc._raw.flattenedPath,
+  },
+  locale: {
+    type: 'string',
+    resolve: (doc: any) => {
+      const path = doc._raw.flattenedPath;
+      return path.startsWith('fr/') ? 'fr' : 'en';
+    },
   },
   headings: {
     type: 'json',
