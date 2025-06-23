@@ -18,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={geistSans.variable}>
       <body
         className={`
           ${geistSans.className}
@@ -31,9 +31,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SplashProvider>
-          {children}
-          </SplashProvider>
+          <SplashProvider>{children}</SplashProvider>
         </ThemeProvider>
       </body>
     </html>
