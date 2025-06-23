@@ -1,0 +1,63 @@
+---
+title: 'Fonctionnalité Tunnel'
+description: 'Comment utiliser la fonctionnalité tunnel dans Agent Zero.'
+date: 2024-07-25
+---
+
+# Fonctionnalité Tunnel Agent Zero
+
+La fonctionnalité tunnel dans Agent Zero vous permet d'exposer votre instance Agent Zero locale à internet en utilisant des tunnels Flaredantic. Cela rend possible le partage de votre instance Agent Zero avec d'autres sans qu'ils aient besoin d'installer et d'exécuter Agent Zero eux-mêmes.
+
+## Comment ça fonctionne
+
+Agent Zero utilise la bibliothèque [Flaredantic](https://pypi.org/project/flaredantic/) pour créer des tunnels sécurisés afin d'exposer votre instance locale à internet. Ces tunnels :
+
+- Sont sécurisés (HTTPS)
+- Ne nécessitent aucune configuration
+- Génèrent des URLs uniques pour chaque session
+- Peuvent être régénérés à la demande
+
+## Utiliser la fonctionnalité Tunnel
+
+1. Ouvrez les paramètres et naviguez vers l'onglet "Services externes"
+2. Cliquez sur "Tunnel Flare" dans le menu de navigation
+3. Cliquez sur le bouton "Créer un tunnel" pour générer un nouveau tunnel
+4. Une fois créé, l'URL du tunnel sera affichée et peut être copiée pour être partagée avec d'autres
+5. L'URL du tunnel restera active jusqu'à ce que vous arrêtiez le tunnel ou fermiez l'application Agent Zero
+
+## Considérations de sécurité
+
+Lors du partage de votre instance Agent Zero via un tunnel :
+
+- Toute personne avec l'URL peut accéder à votre instance Agent Zero
+- Aucune authentification supplémentaire n'est ajoutée au-delà de ce que votre instance Agent Zero a déjà
+- Considérez la mise en place d'une authentification si vous partagez des informations sensibles
+- Le tunnel expose votre instance Agent Zero locale, pas votre système entier
+
+## Dépannage
+
+Si vous rencontrez des problèmes avec la fonctionnalité tunnel :
+
+1. Vérifiez votre connexion internet
+2. Essayez de rafraîchir l'URL du tunnel
+3. Redémarrez Agent Zero
+4. Vérifiez les logs de la console pour tout message d'erreur
+
+## Ajouter l'authentification
+
+Pour ajouter une authentification de base à votre instance Agent Zero lors de l'utilisation de tunnels, vous pouvez définir les variables d'environnement suivantes :
+
+```
+AUTH_LOGIN=votre_nom_utilisateur
+AUTH_PASSWORD=votre_mot_de_passe
+```
+
+Alternativement, vous pouvez configurer le nom d'utilisateur et le mot de passe directement dans les paramètres :
+
+1. Ouvrez la modal des paramètres dans l'interface Agent Zero
+2. Naviguez vers l'onglet "Services externes"
+3. Trouvez la section "Authentification"
+4. Entrez votre nom d'utilisateur et mot de passe souhaités dans les champs "Connexion UI" et "Mot de passe UI"
+5. Cliquez sur le bouton "Sauvegarder" pour appliquer les changements
+
+Cela exigera des utilisateurs qu'ils entrent ces identifiants lors de l'accès à votre instance Agent Zero tunnelisée. Lors de la tentative de création d'un tunnel sans authentification configurée, Agent Zero affichera un avertissement de sécurité. 

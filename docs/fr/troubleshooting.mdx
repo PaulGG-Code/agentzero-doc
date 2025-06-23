@@ -1,0 +1,51 @@
+---
+title: 'Dépannage'
+description: 'Dépannage et FAQ pour Agent Zero.'
+date: 2024-07-25
+---
+
+# Dépannage et FAQ
+Cette page répond aux questions fréquemment posées (FAQ) et fournit des étapes de dépannage pour les problèmes courants rencontrés lors de l'utilisation d'Agent Zero.
+
+## Questions fréquemment posées
+**1. Comment demander à Agent Zero de travailler directement sur mes fichiers ou dossiers ?**
+- Placez les fichiers/dossiers dans le répertoire `work_dir`. Agent Zero pourra effectuer des tâches sur eux. Le répertoire `work_dir` est situé dans le répertoire racine du conteneur Docker.
+
+**2. Quand je saisis quelque chose dans le chat, rien ne se passe. Qu'est-ce qui ne va pas ?**
+- Vérifiez si vous avez configuré des clés API dans la page Paramètres. Si ce n'est pas le cas, l'application ne pourra pas communiquer avec les endpoints dont elle a besoin pour exécuter les LLMs et effectuer des tâches.
+
+**3. Comment intégrer des modèles open-source avec Agent Zero ?**
+Référez-vous à la section [Choisir vos LLMs](/docs/installation#installer-et-utiliser-ollama-modèles-locaux) de la documentation pour des instructions détaillées et des exemples pour configurer différents LLMs. Les modèles locaux peuvent être exécutés en utilisant Ollama ou LM Studio.
+
+<Note type="tip">
+Certains fournisseurs de LLM offrent une utilisation gratuite de leurs APIs, par exemple Groq, Mistral ou SambaNova.
+</Note>
+
+**6. Comment faire en sorte qu'Agent Zero conserve la mémoire entre les sessions ?**
+Référez-vous à la section [Comment mettre à jour Agent Zero](/docs/installation#comment-mettre-à-jour-agent-zero) de la documentation pour des instructions sur la façon de mettre à jour Agent Zero tout en conservant la mémoire et les données.
+
+**7. Où puis-je trouver plus de documentation ou de tutoriels ?**
+- Rejoignez la communauté Agent Zero [Skool](https://www.skool.com/agent-zero) ou [Discord](https://discord.gg/Z2tun2N3) pour le support et les discussions.
+
+**8. Comment ajuster les limites de taux d'API ?**
+Modifiez les paramètres `rate_limit_seconds` et `rate_limit_requests` dans la classe `AgentConfig` dans `initialize.py`.
+
+**9. Mon code_execution_tool ne fonctionne pas, qu'est-ce qui ne va pas ?**
+- Assurez-vous d'avoir Docker installé et en cours d'exécution. Si vous utilisez Docker Desktop sur macOS, accordez-lui l'accès à vos fichiers de projet dans les paramètres de Docker Desktop. Consultez le [Guide d'installation](/docs/installation#4-installer-docker-application-docker-desktop) pour plus de détails.
+- Vérifiez que l'image Docker est mise à jour.
+
+**10. Agent Zero peut-il interagir avec des APIs ou services externes (par exemple, WhatsApp) ?**
+Étendre Agent Zero pour interagir avec des APIs externes est possible en créant des outils ou solutions personnalisés. Référez-vous à la documentation sur leur création.
+
+## Dépannage
+
+**Installation**
+- **Problèmes Docker :** Si les conteneurs Docker ne démarrent pas, consultez la documentation Docker et vérifiez votre installation et configuration Docker. Sur macOS, assurez-vous d'avoir accordé à Docker l'accès à vos fichiers de projet dans les paramètres de Docker Desktop comme décrit dans le [Guide d'installation](/docs/installation#4-installer-docker-application-docker-desktop). Vérifiez que l'image Docker est mise à jour.
+
+**Utilisation**
+
+- **Commandes terminal non exécutées :** Assurez-vous que le conteneur Docker fonctionne et est correctement configuré. Vérifiez les paramètres SSH si applicable. Vérifiez si l'image Docker est mise à jour en la supprimant de l'application Docker Desktop, puis en la téléchargeant à nouveau.
+
+* **Messages d'erreur :** Portez une attention particulière aux messages d'erreur affichés dans l'interface Web ou le terminal. Ils fournissent souvent des indices précieux pour diagnostiquer le problème. Référez-vous au message d'erreur spécifique dans les recherches en ligne ou les forums communautaires pour des solutions potentielles.
+
+* **Problèmes de performance :** Si Agent Zero est lent ou ne répond pas, cela pourrait être dû à des limitations de ressources, à la latence du réseau, ou à la complexité de vos prompts et tâches, surtout lors de l'utilisation de modèles locaux. 

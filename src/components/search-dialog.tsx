@@ -7,15 +7,12 @@ import React, {
   useImperativeHandle,
   useEffect,
 } from 'react';
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-} from '@/components/dialog';
+import { Dialog, DialogTrigger, DialogContent } from '@/components/dialog';
 import { Input } from '@/components/input';
 import SearchButton from '@/components/search-button';
 import { Text, Search } from 'lucide-react';
 import Link from 'next/link';
+import { useTranslations, useLocale } from 'next-intl';
 
 export interface DocType {
   title: string;
@@ -79,6 +76,8 @@ const SearchDialog = forwardRef<SearchDialogHandle, SearchDialogProps>(
   ({ searchData }, ref) => {
     const [open, setOpen] = useState(false);
     const [query, setQuery] = useState('');
+    const t = useTranslations('header');
+    const locale = useLocale();
 
     useImperativeHandle(ref, () => ({
       close: () => setOpen(false),
@@ -96,34 +95,49 @@ const SearchDialog = forwardRef<SearchDialogHandle, SearchDialogProps>(
       return () => document.removeEventListener('keydown', handleKeyDown);
     }, []);
 
+    // Filter docs by current locale
+    const docsForLocale = useMemo(() => {
+      return searchData.filter((doc) => {
+        const docLocale = doc._raw.flattenedPath.startsWith('fr/')
+          ? 'fr'
+          : 'en';
+        return docLocale === locale;
+      });
+    }, [searchData, locale]);
+
     const filteredDocs = useMemo(() => {
       if (!query) return [];
       const q = query.toLowerCase();
-      return searchData.filter((doc) => {
+      return docsForLocale.filter((doc) => {
         const title = doc.title.toLowerCase();
         const description = (doc.body.raw || '').toLowerCase();
         return title.includes(q) || description.includes(q);
       });
-    }, [query, searchData]);
+    }, [query, docsForLocale]);
+
+    const getDocUrl = (doc: DocType) => {
+      const path = doc._raw.flattenedPath;
+      if (path.startsWith('fr/')) {
+        return `/fr/docs/${path.substring(3)}`;
+      }
+      return `/en/docs/${path}`;
+    };
 
     return (
       <Dialog open={open} setOpen={setOpen}>
-        <DialogTrigger className='hidden sm:block'>
-          <SearchButton
-            size="sm"
-            placeholder="Search documentation.."
-          />
+        <DialogTrigger className="hidden sm:block">
+          <SearchButton size="sm" placeholder={t('search')} />
         </DialogTrigger>
         <DialogContent className="fixed h-auto sm:max-w-xl bg-muted p-2 top-40">
-        {/* Close Button */}
-        {/* <DialogCloseTrigger asChild>
-          <button
-            className="cursor-pointer border border-border text-lg absolute -top-2 -right-2 bg-muted text-black dark:text-white rounded-full w-5 h-5 flex items-center justify-center shadow"
-            aria-label="Close"
-          >
-            &times;
-          </button>
-        </DialogCloseTrigger> */}
+          {/* Close Button */}
+          {/* <DialogCloseTrigger asChild>
+            <button
+              className="cursor-pointer border border-border text-lg absolute -top-2 -right-2 bg-muted text-black dark:text-white rounded-full w-5 h-5 flex items-center justify-center shadow"
+              aria-label="Close"
+            >
+              &times;
+            </button>
+          </DialogCloseTrigger> */}
           {/* <DialogHeader>
             <DialogTitle>Search Documentation</DialogTitle>
             <DialogDescription>Type below to search your docs.</DialogDescription>
@@ -132,7 +146,7 @@ const SearchDialog = forwardRef<SearchDialogHandle, SearchDialogProps>(
             <Input
               type="text"
               className="w-full bg-transparent focus:outline-none rounded-none border-t-0 border-x-0 border-border pl-10 pr-4 py-2"
-              placeholder="Search the docs..."
+              placeholder={t('search')}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
@@ -148,10 +162,7 @@ const SearchDialog = forwardRef<SearchDialogHandle, SearchDialogProps>(
                     key={doc._raw.flattenedPath}
                     className="gap-2 py-2 border-b border-border"
                   >
-                    <Link
-                      href={`/docs/${doc._raw.flattenedPath}`}
-                      onClick={() => setOpen(false)}
-                    >
+                    <Link href={getDocUrl(doc)} onClick={() => setOpen(false)}>
                       <div className="flex flex-col gap-3">
                         <div className="flex gap-2 font-bold">
                           <Text /> <div>{highlightText(doc.title, query)}</div>

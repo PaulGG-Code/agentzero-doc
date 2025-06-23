@@ -1,20 +1,43 @@
 import { NextRequest, NextResponse } from 'next/server';
+import createMiddleware from 'next-intl/middleware';
+import { locales, defaultLocale } from '@/lib/i18n';
 
-export function middleware(req: NextRequest) {
-  console.log('req.nextUrl==>', req.nextUrl.pathname);
-  // Check if the request path starts with `/documentation`
-  if (req.nextUrl.pathname.startsWith('/docs')) {
-    // Redirect to /documentation/getting-started
+const intlMiddleware = createMiddleware({
+  locales,
+  defaultLocale,
+  localePrefix: 'always',
+});
+
+function hasLocalePrefix(pathname: string) {
+  return locales.some(
+    (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`)
+  );
+}
+
+export default function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  // If the path does not start with a locale, redirect to default locale
+  if (!hasLocalePrefix(pathname)) {
+    // Special case: root path
+    if (pathname === '/') {
+      return NextResponse.redirect(new URL(`/${defaultLocale}`, req.url));
+    }
     return NextResponse.redirect(
-      new URL('/docs/getting-started/introduction', req.url)
+      new URL(`/${defaultLocale}${pathname}`, req.url)
     );
   }
 
-  // Return the response unchanged if the condition is not met
-  return NextResponse.next();
+  // Otherwise, let next-intl handle it
+  return intlMiddleware(req);
 }
 
-// Optionally, specify the routes to match
+// Specify the routes to match
 export const config = {
-  matcher: ['/docs', '/docs/getting-started'], // Matches any URL starting with /documentation
+  matcher: [
+    // Match all pathnames except for
+    // - … if they start with `/api`, `/_next` or `/_vercel`
+    // - … the ones containing a dot (e.g. `favicon.ico`)
+    '/((?!api|_next|_vercel|.*\\..*).*)',
+  ],
 };

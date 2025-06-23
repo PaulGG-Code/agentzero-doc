@@ -2,66 +2,64 @@ import { Rocket, Book, Wrench } from 'lucide-react';
 
 export const sidebarNav = [
   {
-    title: 'Getting Started',
+    title: 'navigation.gettingStarted',
     icon: <Rocket className="h-5 w-5" />,
     defaultOpen: true,
     pages: [
       {
-        title: 'Welcome',
+        title: 'sidebar.welcome',
         href: '/docs/readme',
       },
       {
-        title: 'Quick Start',
+        title: 'sidebar.quickStart',
         href: '/docs/quickstart',
       },
       {
-        title: 'Installation',
+        title: 'sidebar.installation',
         href: '/docs/installation',
       },
       {
-        title: 'Usage Guide',
+        title: 'sidebar.usageGuide',
         href: '/docs/usage',
       },
     ],
   },
   {
-    title: 'Guides',
+    title: 'navigation.guides',
     icon: <Book className="h-5 w-5" />,
     defaultOpen: false,
     pages: [
       {
-        title: 'Architecture',
+        title: 'sidebar.architecture',
         href: '/docs/architecture',
       },
       {
-        title: 'CUDA Docker Setup',
+        title: 'sidebar.cudaDockerSetup',
         href: '/docs/cuda_docker_setup',
       },
       {
-        title: 'MCP Server Setup',
+        title: 'sidebar.mcpServerSetup',
         href: '/docs/mcp_setup',
       },
       {
-        title: 'Tunnel Feature',
+        title: 'sidebar.tunnelFeature',
         href: '/docs/tunnel',
-      }
+      },
     ],
   },
   {
-    title: 'Advanced',
+    title: 'navigation.advanced',
     icon: <Wrench className="h-5 w-5" />,
     defaultOpen: false,
     pages: [
       {
-        title: 'Troubleshooting',
+        title: 'sidebar.troubleshooting',
         href: '/docs/troubleshooting',
       },
       {
-        title: 'Contributing',
+        title: 'sidebar.contributing',
         href: '/docs/contribution',
       },
     ],
   },
 ];
-
-

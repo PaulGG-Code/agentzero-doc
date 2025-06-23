@@ -1,0 +1,110 @@
+---
+title: 'Configuration CUDA Docker'
+description: 'Comment configurer Agent Zero avec support GPU CUDA en utilisant Docker.'
+date: 2024-07-25
+---
+
+# Agent Zero : Support GPU CUDA 🚀
+
+Ce guide explique comment construire et exécuter Agent Zero avec accélération GPU NVIDIA en utilisant CUDA. L'exécution avec CUDA permet des performances plus rapides pour les charges de travail d'IA en exploitant votre GPU.
+
+---
+
+## Prérequis
+
+Avant de commencer, assurez-vous d'avoir :
+
+1. **GPU NVIDIA** avec capacité CUDA
+2. **Pilote NVIDIA** installé sur votre système hôte
+3. **NVIDIA Container Toolkit** ([Guide d'installation](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html))  
+   _Cela permet à Docker d'accéder à votre GPU_
+4. **Docker** et **Docker Compose** installés
+
+---
+
+## 1. Construire l'image Docker CUDA
+
+Ouvrez un terminal dans ce répertoire et exécutez :
+
+```bash
+# Définir la branche à partir de laquelle vous voulez construire (par défaut : main)
+$branch="main"
+docker build --no-cache -t frdel/agent-zero-run-cuda:testing --build-arg BRANCH=$branch -f Dockerfile.cuda .
+```
+
+---
+
+## 2. Exécuter Agent Zero avec support CUDA
+
+Vous pouvez démarrer Agent Zero avec support GPU en utilisant Docker Compose :
+
+```bash
+# Sur Linux, macOS, ou Windows PowerShell :
+docker-compose -f docker-compose.cuda.yml up -d
+```
+
+- Cela lancera Agent Zero en arrière-plan avec l'accélération GPU activée.
+
+---
+
+## 3. Accéder à Agent Zero
+
+Une fois le conteneur en cours d'exécution, ouvrez votre navigateur et allez à :
+
+[http://localhost:50080](http://localhost:50080)
+
+---
+
+## 4. Arrêter Agent Zero
+
+Pour arrêter le conteneur Agent Zero avec CUDA activé :
+
+```bash
+docker-compose -f docker-compose.cuda.yml down
+```
+
+---
+
+## 5. Basculer entre les versions CPU et GPU
+
+Vous pouvez facilement basculer entre les versions CPU et GPU :
+
+1. **Arrêter la version actuellement en cours d'exécution :**
+   ```bash
+   # Pour la version CPU :
+   docker-compose down
+   # Pour la version GPU :
+   docker-compose -f docker-compose.cuda.yml down
+   ```
+
+2. **Démarrer la version que vous voulez :**
+   ```bash
+   # Version CPU :
+   docker-compose -f docker-compose.yml up -d
+
+   # Version GPU (CUDA) :
+   docker-compose -f docker-compose.cuda.yml up -d
+   ```
+
+---
+
+## Dépannage et conseils
+
+- **La première configuration peut prendre plusieurs minutes** car les dépendances sont téléchargées et installées.
+- Si vous rencontrez des problèmes d'accès GPU, vérifiez que vos pilotes NVIDIA et le NVIDIA Container Toolkit sont correctement installés.
+- Pour vérifier si CUDA est disponible à l'intérieur du conteneur, vous pouvez exécuter :
+  ```bash
+  docker exec -it <nom_conteneur> python3 -c "import torch; print(torch.cuda.is_available())"
+  ```
+- Pour la configuration avancée, voir les commentaires dans `Dockerfile.cuda`.
+
+---
+
+## Plus d'informations
+
+- [Documentation NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
+- [Projet Agent Zero](https://github.com/frdel/agent-zero) (remplacez par votre lien de repo réel si différent)
+
+---
+
+**Profitez de l'IA accélérée avec Agent Zero et CUDA !** 
