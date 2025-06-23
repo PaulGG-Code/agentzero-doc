@@ -22,14 +22,18 @@ export const generateMetadata = async ({ params }: { params: tParams }) => {
 
   // Filter docs by locale
   const docsForLocale = allDocs.filter((doc) => {
-    const docLocale = doc._raw.flattenedPath.startsWith('fr/') ? 'fr' : 'en';
+    let docLocale = 'en';
+    if (doc._raw.flattenedPath.startsWith('fr/')) docLocale = 'fr';
+    else if (doc._raw.flattenedPath.startsWith('it/')) docLocale = 'it';
+    else if (doc._raw.flattenedPath.startsWith('es/')) docLocale = 'es';
     return docLocale === locale;
   });
 
   const doc = docsForLocale.find((doc) => {
-    const docPath = doc._raw.flattenedPath.startsWith('fr/')
-      ? doc._raw.flattenedPath.substring(3)
-      : doc._raw.flattenedPath;
+    let docPath = doc._raw.flattenedPath;
+    if (docPath.startsWith('fr/')) docPath = docPath.substring(3);
+    else if (docPath.startsWith('it/')) docPath = docPath.substring(3);
+    else if (docPath.startsWith('es/')) docPath = docPath.substring(3);
     return docPath === path;
   });
 
@@ -52,14 +56,18 @@ const DocsPage = async ({ params }: { params: tParams }) => {
 
   // Filter docs by locale
   const docsForLocale = allDocs.filter((doc) => {
-    const docLocale = doc._raw.flattenedPath.startsWith('fr/') ? 'fr' : 'en';
+    let docLocale = 'en';
+    if (doc._raw.flattenedPath.startsWith('fr/')) docLocale = 'fr';
+    else if (doc._raw.flattenedPath.startsWith('it/')) docLocale = 'it';
+    else if (doc._raw.flattenedPath.startsWith('es/')) docLocale = 'es';
     return docLocale === locale;
   });
 
   const doc = docsForLocale.find((doc) => {
-    const docPath = doc._raw.flattenedPath.startsWith('fr/')
-      ? doc._raw.flattenedPath.substring(3)
-      : doc._raw.flattenedPath;
+    let docPath = doc._raw.flattenedPath;
+    if (docPath.startsWith('fr/')) docPath = docPath.substring(3);
+    else if (docPath.startsWith('it/')) docPath = docPath.substring(3);
+    else if (docPath.startsWith('es/')) docPath = docPath.substring(3);
     return docPath === path;
   });
 

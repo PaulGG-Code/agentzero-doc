@@ -1,0 +1,262 @@
+---
+title: 'Guía de Uso'
+description: 'Una guía para explorar escenarios de uso y configuración para Agent Zero.'
+date: 2024-07-25
+---
+
+# Guía de Uso
+
+Esta guía explora escenarios de uso y configuración para Agent Zero. Puedes considerar esto como una guía de referencia post-instalación.
+
+![Mensaje de Utilidad con Soluciones](/res/memory-man.png)
+
+## Operaciones Básicas
+
+Agent Zero proporciona varias operaciones básicas a través de su interfaz:
+
+### Reiniciar Framework
+
+El botón Reiniciar te permite reiniciar rápidamente el framework de Agent Zero sin usar la terminal:
+
+![Reiniciar Framework](/res/ui-restarting.png)
+
+- Haz clic en el botón "Reiniciar" en la barra lateral
+- Aparecerá una notificación azul indicando "Reiniciando..."
+- Una vez completado, se mostrará un mensaje de éxito verde "Reiniciado"
+- El framework se reinicializará manteniendo tu historial de chat y contexto actual
+
+<Note type="tip">
+  Usa la función Reiniciar cuando quieras: - Resetear el framework si encuentras
+  comportamiento inesperado - Reinicializar el sistema cuando los agentes se
+  vuelven no responsivos
+</Note>
+
+### Botones de Acción
+
+Ubicados debajo del cuadro de entrada del chat, Agent Zero proporciona un conjunto de botones de acción para control y visibilidad mejorados:
+
+![Botones de Acción](/res/ui-actions.png)
+
+#### Control de Flujo de Chat
+
+- **Pausar/Reanudar Agente:** Botón de alternancia para pausar y reanudar el flujo de chat
+  - Haz clic para pausar operaciones continuas del agente
+  - Cambia a "Reanudar Agente" cuando está pausado
+  - Haz clic nuevamente para reanudar el flujo de chat y ejecución de comandos
+
+#### Gestión de Conocimiento y Archivos
+
+- **Importar Conocimiento:** Importa archivos externos a la base de conocimiento del agente
+  - Soporta formatos `.txt`, `.pdf`, `.csv`, `.html`, `.json`, y `.md`
+  - Los archivos se almacenan en `\knowledge\custom\main`
+  - El mensaje de éxito confirma la importación exitosa
+  - Ver [conocimiento](/es/docs/architecture#conocimiento) para más detalles
+
+### Navegador de Archivos: Gestiona archivos en el entorno de Agent Zero
+
+- Sube nuevos archivos y carpetas
+- Descarga archivos (haz clic en el nombre del archivo) o carpetas (como archivos zip)
+- Elimina archivos y carpetas
+- Navega directorios usando el botón "Arriba"
+- Soporte para renombrar archivos y búsqueda próximamente
+- Ver sección [Navegador de Archivos](#navegador-de-archivos) para características detalladas
+
+#### Depuración y Monitoreo
+
+- **Contexto:** Ve la ventana de contexto completa enviada al LLM
+  - Incluye prompts del sistema
+  - Muestra el contexto de conversación actual
+  - Muestra instrucciones y parámetros activos
+
+![Contexto](/res/ui-context.png)
+
+### Historial:
+
+Accede al historial de chat en formato JSON
+
+- Ve la conversación como la procesa el LLM
+- Útil para depuración y comprensión del comportamiento del agente
+
+![Historial](/res/ui-history.png)
+
+- **Empujón:** Reinicia el último proceso del agente
+  - Útil cuando los agentes se vuelven no responsivos
+  - Reintenta la última operación
+  - Ayuda a recuperarse de estados bloqueados
+
+![Empujón](/res/ui-nudge.png)
+
+<Note type="tip">
+  Usa los botones Contexto e Historial para entender cómo el agente interpreta
+  tus instrucciones y depurar cualquier comportamiento inesperado.
+</Note>
+
+### Archivos Adjuntos
+
+Agent Zero soporta adjuntos de archivos directos en la interfaz de chat para operaciones de archivos sin problemas:
+
+#### Adjuntar Archivos
+
+- Haz clic en el ícono de adjunto (📎) en el lado izquierdo del cuadro de entrada del chat
+- Selecciona uno o múltiples archivos para adjuntar
+- Vista previa de archivos adjuntos antes de enviar:
+  - Los nombres de archivos se muestran con sus tipos (HTML, PDF, JPG, etc.)
+  - Las imágenes muestran miniaturas cuando están disponibles
+  - Los archivos se listan en el área de entrada del chat esperando ser enviados
+
+![Archivos Adjuntos](/res/ui-attachments.png)
+
+#### Trabajar con Archivos Adjuntos
+
+- Los archivos pueden ser referenciados directamente en tus mensajes
+- Agent Zero puede:
+  - Procesar archivos adjuntos
+  - Mover archivos a directorios específicos
+  - Realizar operaciones en múltiples archivos simultáneamente
+  - Confirmar operaciones exitosas de archivos con respuestas detalladas
+
+![Trabajando con Adjuntos](/res/ui-attachments-2.png)
+
+<Note type="tip">
+  Cuando trabajes con múltiples archivos, puedes adjuntarlos todos a la vez y
+  luego dar instrucciones sobre qué hacer con ellos. El agente los manejará como
+  un lote mientras te mantienes informado del progreso.
+</Note>
+
+## Uso de Herramientas
+
+El poder de Agent Zero viene de su capacidad para usar [herramientas](/es/docs/architecture#herramientas). Aquí está cómo aprovecharlas efectivamente:
+
+- **Entender Herramientas:** Agent Zero incluye herramientas predeterminadas como conocimiento (alimentado por SearXNG), contenido de páginas web, ejecución de código y comunicación. Entiende las capacidades de estas herramientas y cómo invocarlas.
+
+## Ejemplo de Uso de Herramientas: Búsqueda Web y Ejecución de Código
+
+Digamos que quieres que Agent Zero realice algunas tareas de análisis financiero. Aquí está un prompt posible:
+
+> Por favor sé un analista financiero profesional. Encuentra la tendencia del precio Bitcoin/USD del mes pasado y haz un gráfico en tu entorno. El gráfico debe tener puntos clave resaltados correspondientes con fechas de noticias importantes sobre criptomonedas. Usa la 'herramienta_conocimiento' para encontrar el precio y las noticias, y la 'herramienta_ejecución_código' para realizar el resto del trabajo.
+
+Agent Zero podría entonces:
+
+1. Usar la `herramienta_conocimiento` para consultar una fuente confiable para el precio de Bitcoin y para las noticias sobre criptomonedas como se solicitó.
+2. Extraer el precio de los resultados de búsqueda y guardar las noticias, extrayendo sus fechas y posible impacto en el precio.
+3. Usar la `herramienta_ejecución_código` para ejecutar un script de Python que realiza la creación del gráfico y resaltado de puntos clave, usando los datos extraídos y las fechas de noticias como entradas.
+4. Devolver el gráfico final que encontrarás en `/work_dir`, respondiendo al usuario con la `herramienta_respuesta`.
+
+<Note>
+  La primera ejecución de `herramienta_ejecución_código` puede tardar un tiempo
+  ya que descarga y construye la imagen Docker de Agent Zero. Las ejecuciones
+  posteriores serán más rápidas.
+</Note>
+
+Este ejemplo demuestra cómo combinar múltiples herramientas para lograr una tarea de análisis. Al dominar la ingeniería de prompts y el uso de herramientas, puedes desbloquear el potencial completo de Agent Zero para resolver problemas complejos.
+
+## Cooperación Multi-Agente
+
+Una de las características únicas de Agent Zero es la cooperación multi-agente.
+
+- **Crear Sub-Agentes:** Los agentes pueden crear sub-agentes para delegar sub-tareas. Esto ayuda a manejar la complejidad y distribuir la carga de trabajo.
+- **Comunicación:** Los agentes pueden comunicarse entre sí, compartiendo información y coordinando acciones. El prompt del sistema y el historial de mensajes juegan un papel clave en guiar esta comunicación.
+- **Jerarquía:** Agent Zero usa una [estructura jerárquica](/es/docs/architecture#jerarquía-de-agentes-y-comunicación), con agentes superiores delegando tareas a subordinados. Esto permite resolución de problemas estructurada y asignación eficiente de recursos.
+
+![](/res/physics.png)
+![](/res/physics-2.png)
+
+## Ingeniería de Prompts
+
+La ingeniería de prompts efectiva es crucial para obtener lo máximo de Agent Zero. Aquí hay algunos consejos y técnicas:
+
+- **Sé Claro y Específico:** Declara claramente tu resultado deseado. Cuanto más específico seas, mejor Agent Zero puede entender y cumplir tu solicitud. Evita lenguaje vago o ambiguo.
+- **Proporciona Contexto:** Si es necesario, proporciona información de fondo o contexto para ayudar al agente a entender mejor la tarea. Esto podría incluir detalles relevantes, restricciones o formato deseado para la respuesta.
+- **Divide Tareas Complejas:** Para tareas complejas, divídelas en sub-tareas más pequeñas y manejables. Esto hace más fácil para el agente razonar a través del problema y generar una solución.
+- **Refinamiento Iterativo:** No esperes resultados perfectos en el primer intento. Experimenta con diferentes prompts, refina tus instrucciones basándote en las respuestas del agente, e itera hasta que logres el resultado deseado. Para lograr una tarea de desarrollo de aplicación web full-stack, por ejemplo, podrías necesitar iterar por algunas horas para 100% de éxito.
+
+## Interfaz de Voz
+
+Agent Zero proporciona capacidades de Texto-a-Voz (TTS) y Voz-a-Texto (STT) para interacción de voz natural:
+
+### Texto-a-Voz
+
+Habilita respuestas de voz de los agentes:
+
+- Alterna el interruptor "Voz" en la sección de Preferencias de la barra lateral
+- Los agentes usarán el sintetizador de voz integrado de tu sistema para hablar sus mensajes
+- Haz clic en el botón "Detener Voz" arriba del área de entrada para detener inmediatamente cualquier voz en curso
+
+![TTS Detener Voz](/res/ui-tts-stop-speech.png)
+
+- La interfaz permite a los usuarios detener la voz en cualquier momento si una respuesta es demasiado larga o si desean intervenir durante la conversación.
+
+El TTS usa una interfaz de voz estándar proporcionada por navegadores modernos, que puede sonar robótica pero es efectiva y no requiere modelos de IA complejos. Esto asegura baja latencia y respuestas rápidas en varias plataformas, incluyendo dispositivos móviles.
+
+<Note type="tip">
+  La característica Texto-a-Voz es excelente para: - Multitarea mientras recibes
+  respuestas del agente - Propósitos de accesibilidad - Crear una experiencia
+  más interactiva
+</Note>
+
+### Voz-a-Texto
+
+Envía mensajes de voz a los agentes usando el modelo Whisper de OpenAI (¡no requiere clave API de OpenAI!):
+
+1. Haz clic en el botón del micrófono en el área de entrada para comenzar a grabar
+2. El color del botón indica el estado actual:
+   - Gris: Inactivo
+   - Rojo: Escuchando
+   - Verde: Grabando
+   - Verde azulado: Esperando
+   - Cian (pulsante): Procesando
+
+Los usuarios pueden ajustar configuraciones como umbral de silencio y duración del mensaje antes de enviar para optimizar su experiencia de interacción.
+
+Configura los ajustes de STT en la página de Ajustes:
+
+- **Tamaño del Modelo:** Elige entre Base (74M, Inglés) u otros modelos
+  - Nota: Solo los modelos Large y Turbo soportan múltiples idiomas
+- **Código de Idioma:** Establece tu idioma preferido (ej. 'en', 'fr', 'it', 'cz')
+- **Detección de Silencio:**
+  - Umbral: Ajusta la sensibilidad (valores más bajos son más sensibles)
+  - Duración: Establece cuánto tiempo debe durar el silencio antes de terminar la grabación
+  - Tiempo de Espera: Establece el tiempo máximo de espera antes de cerrar el micrófono
+
+![Configuración de Voz a Texto](/res/ui-settings-5-speech-to-text.png)
+
+<Note type="important">
+  Todas las funcionalidades STT y TTS operan localmente dentro del contenedor
+  Docker, asegurando que no se transmitan datos a servidores externos o APIs de
+  OpenAI. Esto mejora la privacidad del usuario mientras mantiene la
+  funcionalidad.
+</Note>
+
+## Expresiones Matemáticas
+
+Agent Zero puede procesar y evaluar expresiones matemáticas complejas directamente en el chat:
+
+- **Soporte de Expresiones:** Incluye operaciones básicas, trigonometría, logaritmos y más
+- **Evaluación Automática:** Las expresiones se evalúan automáticamente cuando se envían
+- **Formato de Respuesta:** Los resultados se muestran en formato claro y legible
+
+## Navegador de Archivos
+
+El navegador de archivos integrado te permite gestionar archivos directamente en el entorno de Agent Zero:
+
+### Características Principales
+
+- **Subida de Archivos:** Arrastra y suelta o selecciona archivos para subir
+- **Descarga de Archivos:** Descarga archivos individuales o carpetas como archivos zip
+- **Eliminación:** Elimina archivos y carpetas de forma segura
+- **Navegación:** Navega por la estructura de directorios usando el botón "Arriba"
+- **Búsqueda:** Busca archivos por nombre (próximamente)
+- **Renombrado:** Cambia nombres de archivos y carpetas (próximamente)
+
+### Uso del Navegador
+
+1. Accede al navegador de archivos desde la barra lateral
+2. Navega por los directorios usando la interfaz intuitiva
+3. Realiza operaciones de archivos usando los botones de acción
+4. Los cambios se reflejan inmediatamente en el sistema de archivos
+
+<Note type="tip">
+  El navegador de archivos es especialmente útil para: - Gestionar archivos de
+  trabajo en `/work_dir` - Organizar archivos de conocimiento en `/knowledge` -
+  Acceder a archivos generados por el agente
+</Note>

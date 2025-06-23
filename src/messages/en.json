@@ -32,6 +32,8 @@
   "language": {
     "en": "English",
     "fr": "Français",
+    "it": "Italiano",
+    "es": "Español",
     "switchLanguage": "Switch language"
   }
 }

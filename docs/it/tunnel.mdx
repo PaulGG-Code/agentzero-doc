@@ -1,0 +1,63 @@
+---
+title: 'Funzionalità Tunnel'
+description: 'Come usare la funzionalità tunnel in Agent Zero.'
+date: 2024-07-25
+---
+
+# Funzionalità Tunnel di Agent Zero
+
+La funzionalità tunnel in Agent Zero ti permette di esporre la tua istanza locale di Agent Zero a internet usando tunnel Flaredantic. Questo rende possibile condividere la tua istanza di Agent Zero con altri senza richiedere loro di installare ed eseguire Agent Zero da soli.
+
+## Come Funziona
+
+Agent Zero usa la libreria [Flaredantic](https://pypi.org/project/flaredantic/) per creare tunnel sicuri per esporre la tua istanza locale a internet. Questi tunnel:
+
+- Sono sicuri (HTTPS)
+- Non richiedono alcuna configurazione
+- Generano URL unici per ogni sessione
+- Possono essere rigenerati su richiesta
+
+## Usare la Funzionalità Tunnel
+
+1. Apri le impostazioni e naviga alla scheda "Servizi Esterni"
+2. Clicca su "Tunnel Flare" nel menu di navigazione
+3. Clicca il pulsante "Crea Tunnel" per generare un nuovo tunnel
+4. Una volta creato, l'URL del tunnel sarà visualizzato e può essere copiato per essere condiviso con altri
+5. L'URL del tunnel rimarrà attivo fino a quando non fermi il tunnel o chiudi l'applicazione Agent Zero
+
+## Considerazioni di Sicurezza
+
+Quando condividi la tua istanza di Agent Zero tramite un tunnel:
+
+- Chiunque abbia l'URL può accedere alla tua istanza di Agent Zero
+- Non viene aggiunta autenticazione aggiuntiva oltre a quella che la tua istanza di Agent Zero ha già
+- Considera di configurare l'autenticazione se stai condividendo informazioni sensibili
+- Il tunnel espone la tua istanza locale di Agent Zero, non l'intero sistema
+
+## Risoluzione Problemi
+
+Se incontri problemi con la funzionalità tunnel:
+
+1. Controlla la tua connessione internet
+2. Prova a ricaricare l'URL del tunnel
+3. Riavvia Agent Zero
+4. Controlla i log della console per eventuali messaggi di errore
+
+## Aggiungere Autenticazione
+
+Per aggiungere autenticazione base alla tua istanza di Agent Zero quando usi tunnel, puoi impostare le seguenti variabili d'ambiente:
+
+```bash
+AUTH_LOGIN=il_tuo_username
+AUTH_PASSWORD=la_tua_password
+```
+
+In alternativa, puoi configurare username e password direttamente nelle impostazioni:
+
+1. Apri il modale impostazioni nell'interfaccia Agent Zero
+2. Naviga alla scheda "Servizi Esterni"
+3. Trova la sezione "Autenticazione"
+4. Inserisci il tuo username e password desiderati nei campi "Login UI" e "Password UI"
+5. Clicca il pulsante "Salva" per applicare le modifiche
+
+Questo richiederà agli utenti di inserire queste credenziali quando accedono alla tua istanza di Agent Zero tunnelizzata. Quando si tenta di creare un tunnel senza autenticazione configurata, Agent Zero visualizzerà un avviso di sicurezza.

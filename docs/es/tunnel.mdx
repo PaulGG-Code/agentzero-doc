@@ -1,0 +1,63 @@
+---
+title: 'Función Tunnel'
+description: 'Cómo usar la función tunnel en Agent Zero.'
+date: 2024-07-25
+---
+
+# Función Tunnel de Agent Zero
+
+La función tunnel en Agent Zero te permite exponer tu instancia local de Agent Zero a internet usando túneles Flaredantic. Esto hace posible compartir tu instancia de Agent Zero con otros sin requerir que instalen y ejecuten Agent Zero ellos mismos.
+
+## Cómo Funciona
+
+Agent Zero usa la biblioteca [Flaredantic](https://pypi.org/project/flaredantic/) para crear túneles seguros para exponer tu instancia local a internet. Estos túneles:
+
+- Son seguros (HTTPS)
+- No requieren ninguna configuración
+- Generan URLs únicas para cada sesión
+- Se pueden regenerar bajo demanda
+
+## Usando la Función Tunnel
+
+1. Abre los ajustes y navega a la pestaña "Servicios Externos"
+2. Haz clic en "Flare Tunnel" en el menú de navegación
+3. Haz clic en el botón "Crear Tunnel" para generar un nuevo túnel
+4. Una vez creado, la URL del túnel se mostrará y se puede copiar para compartir con otros
+5. La URL del túnel permanecerá activa hasta que detengas el túnel o cierres la aplicación Agent Zero
+
+## Consideraciones de Seguridad
+
+Cuando compartes tu instancia de Agent Zero a través de un túnel:
+
+- Cualquiera con la URL puede acceder a tu instancia de Agent Zero
+- No se agrega autenticación adicional más allá de lo que tu instancia de Agent Zero ya tiene
+- Considera configurar autenticación si estás compartiendo información sensible
+- El túnel expone tu instancia local de Agent Zero, no todo tu sistema
+
+## Solución de Problemas
+
+Si encuentras problemas con la función tunnel:
+
+1. Verifica tu conexión a internet
+2. Intenta refrescar la URL del túnel
+3. Reinicia Agent Zero
+4. Verifica los logs de la consola para cualquier mensaje de error
+
+## Agregar Autenticación
+
+Para agregar autenticación básica a tu instancia de Agent Zero cuando uses túneles, puedes establecer las siguientes variables de entorno:
+
+```
+AUTH_LOGIN=tu_nombre_de_usuario
+AUTH_PASSWORD=tu_contraseña
+```
+
+Alternativamente, puedes configurar el nombre de usuario y contraseña directamente en los ajustes:
+
+1. Abre el modal de ajustes en la UI de Agent Zero
+2. Navega a la pestaña "Servicios Externos"
+3. Encuentra la sección "Autenticación"
+4. Ingresa tu nombre de usuario y contraseña deseados en los campos "Inicio de Sesión UI" y "Contraseña UI"
+5. Haz clic en el botón "Guardar" para aplicar los cambios
+
+Esto requerirá que los usuarios ingresen estas credenciales cuando accedan a tu instancia de Agent Zero con túnel. Al intentar crear un túnel sin autenticación configurada, Agent Zero mostrará una advertencia de seguridad.

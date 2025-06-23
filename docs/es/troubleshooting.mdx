@@ -1,0 +1,63 @@
+---
+title: 'Resolución de Problemas'
+description: 'Resolución de problemas y preguntas frecuentes sobre Agent Zero.'
+date: 2024-07-25
+---
+
+# Resolución de Problemas y Preguntas Frecuentes
+
+Esta página aborda preguntas frecuentes (FAQ) y proporciona pasos de solución para los problemas comunes que pueden surgir al utilizar Agent Zero.
+
+## Preguntas Frecuentes
+
+**1. ¿Cómo puedo pedirle a Agent Zero que trabaje directamente en mis archivos o directorios?**
+
+- Coloca los archivos o directorios en el directorio `work_dir`. Agent Zero podrá realizar tareas sobre ellos. El directorio `work_dir` se encuentra en el directorio raíz del contenedor Docker.
+
+**2. Cuando escribo algo en el chat, no sucede nada. ¿Qué está mal?**
+
+- Verifica si has configurado las claves API en la página de Configuración. Si no lo has hecho, la aplicación no podrá comunicarse con los endpoints necesarios para ejecutar los LLM y realizar tareas.
+
+**3. ¿Cómo integro modelos de código abierto con Agent Zero?**
+
+Consulta la sección [Elegir tus LLMs](/docs/installation#installing-and-using-ollama-local-models) de la documentación para obtener instrucciones detalladas y ejemplos sobre cómo configurar diferentes LLMs. Los modelos locales pueden ejecutarse usando Ollama o LM Studio.
+
+<Note type="tip">
+  Algunos proveedores de LLM ofrecen uso gratuito de sus APIs, por ejemplo Groq, Mistral
+  o SambaNova.
+</Note>
+
+**6. ¿Cómo puedo hacer que Agent Zero conserve la memoria entre sesiones?**
+
+Consulta la sección [Cómo actualizar Agent Zero](/docs/installation#how-to-update-agent-zero) de la documentación para obtener instrucciones sobre cómo actualizar Agent Zero conservando la memoria y los datos.
+
+**7. ¿Dónde puedo encontrar más documentación o tutoriales?**
+
+- Únete a la comunidad de Agent Zero en [Skool](https://www.skool.com/agent-zero) o [Discord](https://discord.gg/Z2tun2N3) para soporte y discusiones.
+
+**8. ¿Cómo ajusto los límites de tasa de las APIs?**
+
+Modifica los parámetros `rate_limit_seconds` y `rate_limit_requests` en la clase `AgentConfig` dentro de `initialize.py`.
+
+**9. Mi herramienta `code_execution_tool` no funciona, ¿qué sucede?**
+
+- Asegúrate de tener Docker instalado y en funcionamiento. Si usas Docker Desktop en macOS, concédele acceso a tus archivos de proyecto desde la configuración de Docker Desktop. Consulta la [Guía de instalación](/docs/installation#4-install-docker-docker-desktop-application) para más detalles.
+- Verifica que la imagen de Docker esté actualizada.
+
+**10. ¿Puede Agent Zero interactuar con APIs o servicios externos (por ejemplo, WhatsApp)?**
+
+Es posible ampliar Agent Zero para interactuar con APIs externas creando herramientas o soluciones personalizadas. Consulta la documentación sobre cómo crearlas.
+
+## Resolución de Problemas
+
+**Instalación**
+
+- **Problemas con Docker:** Si los contenedores de Docker no se inician, consulta la documentación de Docker y verifica tu instalación y configuración de Docker. En macOS, asegúrate de haber concedido acceso a Docker a tus archivos de proyecto en la configuración de Docker Desktop, tal como se describe en la [Guía de instalación](/docs/installation#4-install-docker-docker-desktop-application). Verifica que la imagen de Docker esté actualizada.
+
+**Uso**
+
+- **Comandos de terminal que no se ejecutan:** Asegúrate de que el contenedor Docker esté en ejecución y correctamente configurado. Verifica la configuración SSH si corresponde. Comprueba si la imagen de Docker está actualizada eliminándola desde la aplicación Docker Desktop y volviéndola a descargar.
+
+- **Mensajes de error:** Presta mucha atención a los mensajes de error mostrados en la interfaz web o terminal. A menudo ofrecen pistas valiosas para diagnosticar el problema. Consulta el mensaje de error específico en búsquedas en línea o foros comunitarios para posibles soluciones.
+
+- **Problemas de rendimiento:** Si Agent Zero está lento o no responde, puede deberse a limitaciones de recursos, latencia de red o la complejidad de tus indicaciones y tareas, especialmente al usar modelos locales.

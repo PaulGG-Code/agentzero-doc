@@ -1,0 +1,227 @@
+---
+title: "Guida all'Uso"
+description: 'Una guida per esplorare scenari di utilizzo e configurazione per Agent Zero.'
+date: 2024-07-25
+---
+
+# Guida all'Uso
+
+Questa guida esplora scenari di utilizzo e configurazione per Agent Zero. Puoi considerare questo come una guida di riferimento post-installazione.
+
+![Messaggio Utility con Soluzioni](/res/memory-man.png)
+
+## Operazioni Base
+
+Agent Zero fornisce diverse operazioni base attraverso la sua interfaccia:
+
+### Riavvia Framework
+
+Il pulsante Riavvia ti permette di riavviare rapidamente il framework Agent Zero senza usare il terminale:
+
+![Riavvia Framework](/res/ui-restarting.png)
+
+- Clicca il pulsante "Riavvia" nella barra laterale
+- Apparirà una notifica blu che indica "Riavvio in corso..."
+- Una volta completato, verrà mostrato un messaggio di successo verde "Riavviato"
+- Il framework si reinizializzerà mantenendo la tua cronologia chat e contesto attuali
+
+<Note type="tip">
+  Usa la funzione Riavvia quando vuoi: - Resettare il framework se incontri
+  comportamenti inaspettati - Reinizializzare il sistema quando gli agenti
+  diventano non responsivi
+</Note>
+
+### Pulsanti Azione
+
+Situati sotto la casella di input chat, Agent Zero fornisce un set di pulsanti azione per controllo e visibilità migliorati:
+
+![Pulsanti Azione](/res/ui-actions.png)
+
+#### Controllo Flusso Chat
+
+- **Pausa/Riprendi Agente:** Pulsante toggle per mettere in pausa e riprendere il flusso chat
+  - Clicca per mettere in pausa le operazioni dell'agente in corso
+  - Cambia in "Riprendi Agente" quando è in pausa
+  - Clicca di nuovo per riprendere il flusso chat e l'esecuzione dei comandi
+
+#### Gestione Conoscenza e File
+
+- **Importa Conoscenza:** Importa file esterni nella base di conoscenza dell'agente
+  - Supporta formati `.txt`, `.pdf`, `.csv`, `.html`, `.json` e `.md`
+  - I file sono memorizzati in `\knowledge\custom\main`
+  - Il messaggio di successo conferma l'importazione riuscita
+  - Vedi [conoscenza](/it/docs/architecture#conoscenza) per maggiori dettagli
+
+### File Browser: Gestisci file nell'ambiente Agent Zero
+
+- Carica nuovi file e cartelle
+- Scarica file (clicca nome file) o cartelle (come archivi zip)
+- Elimina file e cartelle
+- Naviga directory usando il pulsante "Su"
+- Supporto per rinomina file e ricerca in arrivo
+- Vedi sezione [File Browser](#file-browser) per funzionalità dettagliate
+
+#### Debug e Monitoraggio
+
+- **Contesto:** Visualizza la finestra di contesto completa inviata all'LLM
+  - Include prompt di sistema
+  - Mostra il contesto della conversazione attuale
+  - Visualizza istruzioni e parametri attivi
+
+![Contesto](/res/ui-context.png)
+
+### Cronologia:
+
+Accedi alla cronologia chat in formato JSON
+
+- Visualizza la conversazione come elaborata dall'LLM
+- Utile per debug e comprensione del comportamento dell'agente
+
+![Cronologia](/res/ui-history.png)
+
+- **Spinta:** Riavvia l'ultimo processo dell'agente
+  - Utile quando gli agenti diventano non responsivi
+  - Riprova l'ultima operazione
+  - Aiuta a recuperare da stati bloccati
+
+![Spinta](/res/ui-nudge.png)
+
+<Note type="tip">
+  Usa i pulsanti Contesto e Cronologia per capire come l'agente interpreta le
+  tue istruzioni e debuggare qualsiasi comportamento inaspettato.
+</Note>
+
+### Allegati File
+
+Agent Zero supporta allegati file diretti nell'interfaccia chat per operazioni file senza interruzioni:
+
+#### Allegare File
+
+- Clicca l'icona allegato (📎) sul lato sinistro della casella di input chat
+- Seleziona uno o più file da allegare
+- Anteprima dei file allegati prima dell'invio:
+  - I nomi dei file sono visualizzati con i loro tipi (HTML, PDF, JPG, ecc.)
+  - Le immagini mostrano miniature quando disponibili
+  - I file sono elencati nell'area di input chat in attesa di essere inviati
+
+![Allegati File](/res/ui-attachments.png)
+
+#### Lavorare con File Allegati
+
+- I file possono essere referenziati direttamente nei tuoi messaggi
+- Agent Zero può:
+  - Elaborare file allegati
+  - Spostare file in directory specifiche
+  - Eseguire operazioni su più file simultaneamente
+  - Confermare operazioni file riuscite con risposte dettagliate
+
+![Lavorare con Allegati](/res/ui-attachments-2.png)
+
+<Note type="tip">
+  Quando lavori con più file, puoi allegarli tutti in una volta e poi dare
+  istruzioni su cosa farne. L'agente li gestirà come un batch mantenendoti
+  informato del progresso.
+</Note>
+
+## Uso degli Strumenti
+
+La potenza di Agent Zero deriva dalla sua capacità di usare [strumenti](/it/docs/architecture#strumenti). Ecco come sfruttarli efficacemente:
+
+- **Comprendi gli Strumenti:** Agent Zero include strumenti predefiniti come conoscenza (alimentata da SearXNG), contenuto web, esecuzione codice e comunicazione. Comprendi le capacità di questi strumenti e come invocarli.
+
+## Esempio di Uso degli Strumenti: Ricerca Web ed Esecuzione Codice
+
+Diciamo che vuoi che Agent Zero esegua alcuni compiti di analisi finanziaria. Ecco un possibile prompt:
+
+> Per favore sii un analista finanziario professionale. Trova l'andamento del prezzo Bitcoin/USD dell'ultimo mese e crea un grafico nel tuo ambiente. Il grafico deve avere punti chiave evidenziati corrispondenti alle date di notizie importanti sulla criptovaluta. Usa lo 'strumento_conoscenza' per trovare il prezzo e le notizie, e lo 'strumento_esecuzione_codice' per eseguire il resto del lavoro.
+
+Agent Zero potrebbe allora:
+
+1. Usare lo `strumento_conoscenza` per interrogare una fonte affidabile per il prezzo Bitcoin e per le notizie sulla criptovaluta come richiesto.
+2. Estrarre il prezzo dai risultati di ricerca e salvare le notizie, estraendo le loro date e possibile impatto sul prezzo.
+3. Usare lo `strumento_esecuzione_codice` per eseguire uno script Python che esegue la creazione del grafico e l'evidenziazione dei punti chiave, usando i dati estratti e le date delle notizie come input.
+4. Restituire il grafico finale che troverai in `/work_dir`, rispondendo all'utente con lo `strumento_risposta`.
+
+<Note>
+  La prima esecuzione di `strumento_esecuzione_codice` potrebbe richiedere del
+  tempo mentre scarica e costruisce l'immagine Docker di Agent Zero. Le
+  esecuzioni successive saranno più veloci.
+</Note>
+
+Questo esempio dimostra come combinare più strumenti per raggiungere un compito di analisi. Padroneggiando l'ingegneria dei prompt e l'uso degli strumenti, puoi sbloccare il pieno potenziale di Agent Zero per risolvere problemi complessi.
+
+## Cooperazione Multi-Agente
+
+Una delle caratteristiche uniche di Agent Zero è la cooperazione multi-agente.
+
+- **Creare Sotto-Agenti:** Gli agenti possono creare sotto-agenti per delegare sotto-compiti. Questo aiuta a gestire la complessità e distribuire il carico di lavoro.
+- **Comunicazione:** Gli agenti possono comunicare tra loro, condividendo informazioni e coordinando azioni. Il prompt di sistema e la cronologia messaggi giocano un ruolo chiave nel guidare questa comunicazione.
+- **Gerarchia:** Agent Zero usa una [struttura gerarchica](/it/docs/architecture#gerarchia-agente-e-comunicazione), con agenti superiori che delegano compiti ai subordinati. Questo permette problem-solving strutturato e allocazione efficiente delle risorse.
+
+![](/res/physics.png)
+![](/res/physics-2.png)
+
+## Ingegneria dei Prompt
+
+L'ingegneria efficace dei prompt è cruciale per ottenere il massimo da Agent Zero. Ecco alcuni suggerimenti e tecniche:
+
+- **Sii Chiaro e Specifico:** Enuncia chiaramente il risultato desiderato. Più specifico sei, meglio Agent Zero può capire e soddisfare la tua richiesta. Evita linguaggio vago o ambiguo.
+- **Fornisci Contesto:** Se necessario, fornisci informazioni di background o contesto per aiutare l'agente a capire meglio il compito. Questo potrebbe includere dettagli rilevanti, vincoli o formato desiderato per la risposta.
+- **Scomponi Compiti Complessi:** Per compiti complessi, scomponili in sotto-compiti più piccoli e gestibili. Questo rende più facile per l'agente ragionare attraverso il problema e generare una soluzione.
+- **Raffinamento Iterativo:** Non aspettarti risultati perfetti al primo tentativo. Sperimenta con diversi prompt, raffinando le tue istruzioni basandoti sulle risposte dell'agente, e itera fino a raggiungere il risultato desiderato. Per raggiungere un compito di sviluppo web-app full-stack, ad esempio, potresti dover iterare per alcune ore per il 100% di successo.
+
+## Interfaccia Vocale
+
+Agent Zero fornisce capacità sia di Text-to-Speech (TTS) che Speech-to-Text (STT) per interazione vocale naturale:
+
+### Text-to-Speech
+
+Abilita risposte vocali dagli agenti:
+
+- Attiva l'interruttore "Parola" nella sezione Preferenze della barra laterale
+- Gli agenti useranno il sintetizzatore vocale integrato del tuo sistema per parlare i loro messaggi
+- Clicca il pulsante "Ferma Parola" sopra l'area di input per fermare immediatamente qualsiasi parola in corso
+
+![TTS Ferma Parola](/res/ui-tts-stop-speech.png)
+
+- L'interfaccia permette agli utenti di fermare la parola in qualsiasi momento se una risposta è troppo lunga o se vogliono intervenire durante la conversazione.
+
+Il TTS usa un'interfaccia vocale standard fornita dai browser moderni, che può suonare robotica ma è efficace e non richiede modelli AI complessi. Questo assicura bassa latenza e risposte veloci su varie piattaforme, inclusi dispositivi mobili.
+
+<Note type="tip">
+  La funzionalità Text-to-Speech è ottima per: - Multitasking mentre ricevi
+  risposte dagli agenti - Scopi di accessibilità - Creare un'esperienza più
+  interattiva
+</Note>
+
+### Speech-to-Text
+
+Invia messaggi vocali agli agenti usando il modello Whisper di OpenAI (non richiede chiave API OpenAI!):
+
+1. Clicca il pulsante microfono nell'area di input per iniziare la registrazione
+2. Il colore del pulsante indica lo stato attuale:
+   - Grigio: Inattivo
+   - Rosso: In ascolto
+   - Verde: Registrazione
+   - Verde acqua: In attesa
+   - Ciano (pulsante): Elaborazione
+
+Gli utenti possono regolare impostazioni come soglia silenzio e durata messaggio prima dell'invio per ottimizzare la loro esperienza di interazione.
+
+Configura le impostazioni STT nella pagina Impostazioni:
+
+- **Dimensione Modello:** Scegli tra Base (74M, Inglese) o altri modelli
+  - Nota: Solo i modelli Large e Turbo supportano più lingue
+- **Codice Lingua:** Imposta la tua lingua preferita (es. 'en', 'fr', 'it', 'cz')
+- **Rilevamento Silenzio:**
+  - Soglia: Regola la sensibilità (valori più bassi sono più sensibili)
+  - Durata: Imposta quanto tempo il silenzio dovrebbe durare prima di terminare la registrazione
+  - Timeout: Imposta il tempo massimo di attesa prima di chiudere il microfono
+
+![Impostazioni Speech to Text](/res/ui-settings-5-speech-to-text.png)
+
+<Note type="important">
+  Tutte le funzionalità STT e TTS operano localmente all'interno del container
+  Docker, assicurando che nessun dato venga trasmesso a server esterni o API
+  OpenAI. Questo migliora la privacy dell'utente mantenendo la funzionalità.
+</Note>
