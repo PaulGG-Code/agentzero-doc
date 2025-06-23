@@ -1,0 +1,137 @@
+---
+title: 'Configurazione Server MCP'
+description: 'Come configurare e utilizzare provider di strumenti esterni attraverso il Model Context Protocol (MCP) con Agent Zero.'
+date: 2024-07-25
+---
+
+# Agent Zero: Guida Integrazione Server MCP
+
+Questa guida spiega come configurare e utilizzare provider di strumenti esterni attraverso il Model Context Protocol (MCP) con Agent Zero. Questo permette ad Agent Zero di sfruttare strumenti ospitati da server MCP-compatibili locali o remoti separati.
+
+## Cosa sono i Server MCP?
+
+I server MCP sono processi o servizi esterni che espongono un set di strumenti che Agent Zero può usare. Agent Zero agisce come un _client_ MCP, consumando strumenti resi disponibili da questi server. L'integrazione supporta due tipi principali di server MCP:
+
+1.  **Server Locali Stdio**: Questi sono tipicamente eseguibili locali con cui Agent Zero comunica tramite input/output standard (stdio).
+2.  **Server Remoti SSE**: Questi sono server, spesso accessibili su una rete, con cui Agent Zero comunica usando Server-Sent Events (SSE), solitamente su HTTP/S.
+
+## Come Agent Zero Consuma Strumenti MCP
+
+Agent Zero scopre e integra strumenti MCP dinamicamente:
+
+1.  **Configurazione**: Definisci i server MCP a cui Agent Zero dovrebbe connettersi nella sua configurazione. Il modo principale per farlo è attraverso l'interfaccia impostazioni di Agent Zero.
+2.  **Salvataggio Impostazioni**: Quando salvi le tue impostazioni tramite l'interfaccia, Agent Zero aggiorna il file `tmp/settings.json`, specificamente la chiave `"mcp_servers"`.
+3.  **Installazione Automatica (al Riavvio)**: Dopo aver salvato le tue impostazioni e riavviato Agent Zero, il sistema tenterà di installare automaticamente qualsiasi pacchetto server MCP definito con `command: "npx"` e l'argomento `--package` nella loro configurazione (questo processo è gestito da `initialize.py`). Puoi monitorare i log dell'applicazione (es. log Docker) per dettagli su questo tentativo di installazione.
+4.  **Scoperta Strumenti**: All'inizializzazione (o quando le impostazioni sono aggiornate), Agent Zero si connette a ogni server MCP configurato e abilitato e lo interroga per la lista di strumenti disponibili, le loro descrizioni e parametri attesi.
+5.  **Prompt Dinamico**: Le informazioni su questi strumenti scoperti sono poi iniettate dinamicamente nel prompt di sistema dell'agente. Un placeholder come `{{tools}}` in un template prompt di sistema (es. `prompts/default/agent.system.mcp_tools.md`) è sostituito con una lista formattata di tutti gli strumenti MCP disponibili. Questo permette al Language Model (LLM) sottostante dell'agente di sapere quali strumenti esterni può richiedere.
+6.  **Invocazione Strumenti**: Quando l'LLM decide di usare uno strumento MCP, il metodo `process_tools` di Agent Zero (gestito da `mcp_handler.py`) lo identifica come uno strumento MCP e instrada la richiesta all'helper `MCPConfig` appropriato, che poi comunica con il server MCP designato per eseguire lo strumento.
+
+## Configurazione
+
+### File di Configurazione e Metodo
+
+Il metodo principale per configurare i server MCP è attraverso **l'interfaccia impostazioni di Agent Zero**.
+
+Quando inserisci e salvi i dettagli del tuo server MCP nell'interfaccia, queste impostazioni sono scritte in:
+
+- `tmp/settings.json`
+
+### L'Impostazione `mcp_servers` in `tmp/settings.json`
+
+All'interno di `tmp/settings.json`, i server MCP sono definiti sotto la chiave `"mcp_servers"`.
+
+- **Tipo Valore**: Il valore per `"mcp_servers"` deve essere una **stringa formattata JSON**. Questa stringa stessa contiene un **array** di oggetti configurazione server.
+- **Valore Predefinito**: Se `tmp/settings.json` non esiste, o se esiste ma non contiene la chiave `"mcp_servers"`, Agent Zero userà un valore predefinito di `""` (una stringa vuota), significando che nessun server MCP è configurato.
+- **Modifica Manuale (Avanzato)**: Mentre la configurazione UI è raccomandata, puoi anche modificare manualmente `tmp/settings.json`. Se lo fai, assicurati che il valore `"mcp_servers"` sia una stringa JSON valida, con le virgolette interne propriamente escape.
+
+**Esempio stringa `mcp_servers` in `tmp/settings.json`:**
+
+```json
+{
+  // ... altre impostazioni ...
+  "mcp_servers": "[{\\\"name\\\": \\\"sequential-thinking\\\",\\\"command\\\": \\\"npx\\\",\\\"args\\\": [\\\"--yes\\\", \\\"--package\\\", \\\"@modelcontextprotocol/server-sequential-thinking\\\", \\\"mcp-server-sequential-thinking\\\"]}, {\\\"name\\\": \\\"brave-search\\\", \\\"command\\\": \\\"npx\\\", \\\"args\\\": [\\\"--yes\\\", \\\"--package\\\", \\\"@modelcontextprotocol/server-brave-search\\\", \\\"mcp-server-brave-search\\\"], \\\"env\\\": {\\\"BRAVE_API_KEY\\\": \\\"YOUR_BRAVE_KEY_HERE\\\"}}, {\\\"name\\\": \\\"fetch\\\", \\\"command\\\": \\\"npx\\\", \\\"args\\\": [\\\"--yes\\\", \\\"--package\\\", \\\"@tokenizin/mcp-npx-fetch\\\", \\\"mcp-npx-fetch\\\", \\\"--ignore-robots-txt\\\", \\\"--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36\\\"]}]"
+  // ... altre impostazioni ...
+}
+```
+
+<br />
+*Nota: Nel file `settings.json` effettivo, l'intero valore per `mcp_servers` è
+una singola stringa, con backslash che escape le virgolette all'interno della
+struttura array.*
+
+- **Aggiornamento**: Come menzionato, il modo raccomandato per impostare o aggiornare questo valore è attraverso l'interfaccia impostazioni di Agent Zero.
+- **Per File `settings.json` Esistenti (Dopo un Aggiornamento)**: Se hai un `tmp/settings.json` esistente da una versione di Agent Zero precedente al supporto server MCP, la chiave `"mcp_servers"` probabilmente sarà mancante. Per aggiungere questa chiave:
+  1.  Assicurati di eseguire una versione di Agent Zero che include il supporto server MCP.
+  2.  Esegui Agent Zero e apri la sua interfaccia impostazioni.
+  3.  Salva le impostazioni (anche senza fare modifiche). Questa azione scriverà la struttura impostazioni corrente completa, inclusa una `"mcp_servers": ""` predefinita se non altrimenti popolata, in `tmp/settings.json`. Puoi poi configurare i tuoi server tramite l'interfaccia o modificando attentamente questa stringa.
+
+### Struttura Configurazione Server MCP
+
+Ecco template per configurare server individuali all'interno della stringa array JSON `mcp_servers`:
+
+**1. Server Stdio Locale**
+
+```json
+{
+  "name": "My Local Tool Server",
+  "description": "Opzionale: Una breve descrizione di questo server.",
+  "command": "python", // L'eseguibile da eseguire (es. python, /path/to/my_tool_server)
+  "args": ["path/to/your/mcp_stdio_script.py", "--some-arg"], // Lista di argomenti per il comando
+  "env": {
+    // Opzionale: Variabili d'ambiente per il processo del comando
+    "PYTHONPATH": "/path/to/custom/libs:.",
+    "ANOTHER_VAR": "value"
+  },
+  "encoding": "utf-8", // Opzionale: Encoding per comunicazione stdio (default: "utf-8")
+  "encoding_error_handler": "strict", // Opzionale: Come gestire errori encoding. Può essere "strict", "ignore", o "replace" (default: "strict").
+  "disabled": false // Imposta a true per disabilitare temporaneamente questo server senza rimuovere la sua configurazione.
+}
+```
+
+**2. Server SSE Remoto**
+
+```json
+{
+  "name": "My Remote API Tools",
+  "description": "Opzionale: Descrizione del server SSE remoto.",
+  "url": "https://api.example.com/mcp-sse-endpoint", // L'URL completo per l'endpoint SSE del server MCP.
+  "headers": {
+    // Opzionale: Qualsiasi header HTTP richiesto per la connessione.
+    "Authorization": "Bearer YOUR_API_KEY_OR_TOKEN",
+    "X-Custom-Header": "some_value"
+  },
+  "timeout": 5.0, // Opzionale: Timeout connessione in secondi (default: 5.0).
+  "sse_read_timeout": 300.0, // Opzionale: Timeout lettura per lo stream SSE in secondi (default: 300.0, cioè 5 minuti).
+  "disabled": false
+}
+```
+
+**Esempio valore `mcp_servers` in `tmp/settings.json`:**
+
+```json
+{
+  // ... altre impostazioni ...
+  "mcp_servers": "[{\\\"name\\\": \\\"MyPythonTools\\\", \\\"command\\\": \\\"python3\\\", \\\"args\\\": [\\\"mcp_scripts/my_server.py\\\"], \\\"disabled\\\": false}, {\\\"name\\\": \\\"ExternalAPI\\\", \\\"url\\\": \\\"https://data.example.com/mcp\\\", \\\"headers\\\": {\\\"X-Auth-Token\\\": \\\"supersecret\\\"}, \\\"disabled\\\": false}]"
+  // ... altre impostazioni ...
+}
+```
+
+<br />
+**Campi Configurazione Chiave:**
+
+- `"name"`: Un nome unico per il server. Questo nome sarà usato per prefissare gli strumenti forniti da questo server (es. `my_server_name.tool_name`). Il nome è normalizzato internamente (convertito in minuscolo, spazi e trattini sostituiti con underscore).
+- `"disabled"`: Un booleano (`true` o `false`). Se `true`, Agent Zero ignorerà questa configurazione server.
+- `"url"`: **Richiesto per Server SSE Remoti.** L'URL endpoint.
+- `"command"`: **Richiesto per Server Stdio Locali.** Il comando eseguibile.
+- `"args"`: Lista opzionale di argomenti per server Stdio locali.
+- Altri campi sono specifici al tipo di server e per lo più opzionali con default.
+
+## Usare Strumenti MCP
+
+Una volta configurati, installati con successo (se applicabile, es. per server basati su `npx`), e scoperti da Agent Zero:
+
+- **Naming Strumenti**: Gli strumenti MCP appariranno all'agente con un nome prefissato dal nome del server che hai definito (e normalizzato, es. minuscolo, underscore per spazi/trattini). Ad esempio, se il tuo server è chiamato `"sequential-thinking"` nella configurazione e offre uno strumento chiamato `"run_chain"`, l'agente lo conoscerà come `sequential_thinking.run_chain`.
+- **Interazione Agente**: Puoi istruire l'agente a usare questi strumenti. Ad esempio: "Agente, usa lo strumento `sequential_thinking.run_chain` con il seguente input..." L'LLM dell'agente formulerà poi la richiesta JSON appropriata.
+- **Flusso Esecuzione**: Il metodo `process_tools` di Agent Zero (con logica in `python/helpers/mcp_handler.py`) prioritizza la ricerca del nome dello strumento nell'`MCPConfig`. Se trovato, l'esecuzione è delegata al server MCP corrispondente. Se non trovato come strumento MCP, tenta poi di trovare uno strumento locale/integrato con quel nome.
+
+Questa configurazione fornisce un modo flessibile per estendere le capacità di Agent Zero integrando con vari provider di strumenti esterni senza modificare il suo codebase core.

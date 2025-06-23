@@ -1,0 +1,59 @@
+---
+title: 'Risoluzione Problemi'
+description: 'Risoluzione problemi e FAQ per Agent Zero.'
+date: 2024-07-25
+---
+
+# Risoluzione Problemi e FAQ
+
+Questa pagina affronta domande frequenti (FAQ) e fornisce passi di risoluzione problemi per problemi comuni incontrati mentre si usa Agent Zero.
+
+## Domande Frequenti
+
+**1. Come chiedo ad Agent Zero di lavorare direttamente sui miei file o directory?**
+
+- Posiziona i file/directory nella directory `work_dir`. Agent Zero sarà in grado di eseguire compiti su di essi. La directory `work_dir` è situata nella directory root del Container Docker.
+
+**2. Quando inserisco qualcosa nella chat, non succede nulla. Cosa c'è di sbagliato?**
+
+- Controlla se hai configurato le chiavi API nella pagina Impostazioni. Se non l'hai fatto, l'applicazione non sarà in grado di comunicare con gli endpoint di cui ha bisogno per eseguire LLM e per eseguire compiti.
+
+**3. Come integro modelli open-source con Agent Zero?**
+Riferisciti alla sezione [Scegliere i tuoi LLM](/it/docs/installation#installazione-e-uso-di-ollama-modelli-locali) della documentazione per istruzioni dettagliate ed esempi per configurare diversi LLM. I modelli locali possono essere eseguiti usando Ollama o LM Studio.
+
+<Note type="tip">
+  Alcuni provider LLM offrono uso gratuito delle loro API, ad esempio Groq,
+  Mistral o SambaNova.
+</Note>
+
+**6. Come posso far sì che Agent Zero mantenga la memoria tra le sessioni?**
+Riferisciti alla sezione [Come aggiornare Agent Zero](/it/docs/installation#come-aggiornare-agent-zero) della documentazione per istruzioni su come aggiornare Agent Zero mantenendo memoria e dati.
+
+**7. Dove posso trovare più documentazione o tutorial?**
+
+- Unisciti alla community Agent Zero su [Skool](https://www.skool.com/agent-zero) o [Discord](https://discord.gg/Z2tun2N3) per supporto e discussioni.
+
+**8. Come regolo i limiti di rate delle API?**
+Modifica i parametri `rate_limit_seconds` e `rate_limit_requests` nella classe `AgentConfig` all'interno di `initialize.py`.
+
+**9. Il mio code_execution_tool non funziona, cosa c'è di sbagliato?**
+
+- Assicurati di avere Docker installato e in esecuzione. Se usi Docker Desktop su macOS, concedigli accesso ai tuoi file di progetto nelle impostazioni di Docker Desktop. Controlla la [guida all'installazione](/it/docs/installation#4-installa-docker-applicazione-docker-desktop) per maggiori dettagli.
+- Verifica che l'immagine Docker sia aggiornata.
+
+**10. Agent Zero può interagire con API esterne o servizi (es. WhatsApp)?**
+Estendere Agent Zero per interagire con API esterne è possibile creando strumenti o soluzioni personalizzati. Riferisciti alla documentazione su come crearli.
+
+## Risoluzione Problemi
+
+**Installazione**
+
+- **Problemi Docker:** Se i container Docker non si avviano, consulta la documentazione Docker e verifica la tua installazione e configurazione Docker. Su macOS, assicurati di aver concesso a Docker accesso ai tuoi file di progetto nelle impostazioni di Docker Desktop come descritto nella [guida all'installazione](/it/docs/installation#4-installa-docker-applicazione-docker-desktop). Verifica che l'immagine Docker sia aggiornata.
+
+**Uso**
+
+- **Comandi terminale non eseguono:** Assicurati che il container Docker sia in esecuzione e configurato correttamente. Controlla le impostazioni SSH se applicabile. Controlla se l'immagine Docker è aggiornata rimuovendola dall'app Docker Desktop e successivamente scaricandola di nuovo.
+
+* **Messaggi di Errore:** Presta molta attenzione ai messaggi di errore visualizzati nell'interfaccia web o terminale. Spesso forniscono indizi preziosi per diagnosticare il problema. Riferisciti al messaggio di errore specifico in ricerche online o forum della community per potenziali soluzioni.
+
+* **Problemi di Performance:** Se Agent Zero è lento o non responsivo, potrebbe essere dovuto a limitazioni di risorse, latenza di rete o complessità dei tuoi prompt e compiti, specialmente quando si usano modelli locali.

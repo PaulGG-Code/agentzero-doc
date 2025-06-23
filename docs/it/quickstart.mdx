@@ -1,0 +1,67 @@
+---
+title: 'Avvio Rapido'
+description: "Una rapida introduzione all'uso di Agent Zero."
+date: 2024-07-25
+---
+
+# Avvio Rapido
+
+Questa guida fornisce una rapida introduzione all'uso di Agent Zero. Copriremo l'avvio dell'interfaccia web, l'inizio di una nuova chat e l'esecuzione di un compito semplice.
+
+## Avvio dell'Interfaccia Web
+
+1. Assicurati di avere Agent Zero installato e il tuo ambiente configurato correttamente (riferisciti alla [guida all'installazione](/it/docs/installation) se necessario).
+2. Apri un terminale nella directory Agent Zero e attiva il tuo ambiente conda (se ne stai usando uno).
+3. Esegui il seguente comando:
+
+```bash
+python run_ui.py
+```
+
+4. Un messaggio simile a questo apparirà nel tuo terminale, indicando che l'interfaccia web è in esecuzione:
+
+![](/res/flask_link.png)
+
+5. Apri il tuo browser web e naviga all'URL mostrato nel terminale (solitamente `http://127.0.0.1:50001`). Dovresti vedere l'interfaccia web di Agent Zero.
+
+![Nuova Chat](/res/ui_newchat1.png)
+
+<Note type="tip">
+  Come puoi vedere, l'interfaccia web ha quattro pulsanti distinti per la facile
+  gestione della chat: `Nuova Chat`, `Reset Chat`, `Salva Chat` e `Carica Chat`.
+  Le chat possono essere salvate e caricate individualmente in formato `json` e
+  sono memorizzate nella directory `/tmp/chats`.
+</Note>
+
+![Gestione Chat](/res/ui_chat_management.png)
+
+## Esecuzione di un Compito Semplice
+
+Chiediamo ad Agent Zero di scaricare un video YouTube. Ecco come:
+
+1. Digita "Scarica un video YouTube per me" nel campo di input chat e premi Invio o clicca il pulsante invia.
+
+2. Agent Zero elaborerà la tua richiesta. Vedrai i suoi "pensieri" e le azioni che intraprende visualizzate nell'interfaccia. Troverà una soluzione predefinita già esistente, che implica l'uso dello `strumento_esecuzione_codice` per eseguire uno script Python semplice per eseguire il compito.
+
+3. L'agente ti chiederà poi l'URL del video YouTube che vuoi scaricare.
+
+## Esempio di Interazione
+
+Ecco un esempio di quello che potresti vedere nell'interfaccia web al passo 3:
+![1](/res/image-24.png)
+
+## Prossimi Passi
+
+Ora che hai eseguito un compito semplice, puoi sperimentare con richieste più complesse. Prova a chiedere ad Agent Zero di:
+
+- Eseguire calcoli
+- Cercare informazioni sul web
+- Eseguire comandi shell
+- Esplorare compiti di sviluppo web
+- Creare o modificare file
+
+<Note type="tip">
+  La [Guida all'Uso](/it/docs/usage) fornisce informazioni più approfondite
+  sull'uso delle varie funzionalità di Agent Zero, inclusa l'ingegneria dei
+  prompt, l'uso degli strumenti e la cooperazione multi-agente.
+</Note>

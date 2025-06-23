@@ -19,8 +19,8 @@ export function LanguageSwitcher() {
   const handleLanguageChange = (newLocale: string) => {
     let newPath = pathname;
     // If current path starts with a locale, replace it
-    if (newPath.match(/^\/(en|fr)(\/|$)/)) {
-      newPath = newPath.replace(/^\/(en|fr)/, `/${newLocale}`);
+    if (newPath.match(/^\/(en|fr|it|es)(\/|$)/)) {
+      newPath = newPath.replace(/^\/(en|fr|it|es)/, `/${newLocale}`);
     } else if (newPath === '/') {
       newPath = `/${newLocale}`;
     } else {
@@ -61,7 +61,15 @@ export function LanguageSwitcher() {
       >
         <Languages className="h-[1.2rem] w-[1.2rem] text-foreground" />
         <span className="hidden sm:inline-block text-sm font-medium">
-          {locale === 'en' ? 'EN' : 'FR'}
+          {locale === 'en'
+            ? 'EN'
+            : locale === 'fr'
+              ? 'FR'
+              : locale === 'it'
+                ? 'IT'
+                : locale === 'es'
+                  ? 'ES'
+                  : locale.toUpperCase()}
         </span>
       </Button>
 
@@ -95,6 +103,30 @@ export function LanguageSwitcher() {
                 onClick={() => handleLanguageChange('fr')}
               >
                 {t('fr')}
+              </Button>
+              <Button
+                variant={locale === 'it' ? 'primary' : 'none'}
+                size="sm"
+                className={`w-full justify-start ${
+                  locale === 'it'
+                    ? 'text-primary-foreground'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                }`}
+                onClick={() => handleLanguageChange('it')}
+              >
+                {t('it')}
+              </Button>
+              <Button
+                variant={locale === 'es' ? 'primary' : 'none'}
+                size="sm"
+                className={`w-full justify-start ${
+                  locale === 'es'
+                    ? 'text-primary-foreground'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                }`}
+                onClick={() => handleLanguageChange('es')}
+              >
+                {t('es')}
               </Button>
             </div>
           </div>

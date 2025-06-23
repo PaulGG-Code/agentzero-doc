@@ -1,0 +1,365 @@
+---
+title: 'Arquitectura'
+description: "Una visión general de alto nivel de la arquitectura de Agent Zero."
+date: 2024-07-25
+---
+
+# Visión General de la Arquitectura
+
+Agent Zero está construido sobre una arquitectura flexible y modular diseñada para la extensibilidad y personalización. Esta sección describe los componentes clave y las interacciones entre ellos.
+
+## Arquitectura del Sistema
+
+Este diagrama simplificado ilustra la relación jerárquica entre los agentes y su interacción con herramientas, extensiones, instrumentos, prompts, memoria y base de conocimientos.
+
+![Arquitectura de Agent Zero](/res/arch-01.svg)
+
+El usuario o el Agente 0 se encuentra en la parte superior de la jerarquía, delegando tareas a agentes subordinados, que a su vez pueden delegar a otros agentes. Cada agente puede utilizar herramientas y acceder a recursos compartidos (prompts, memoria, conocimientos, extensiones e instrumentos) para realizar sus tareas.
+
+## Arquitectura en Tiempo de Ejecución
+
+La arquitectura en tiempo de ejecución de Agent Zero se basa en contenedores Docker:
+
+1. **Sistema Host (tu máquina)**:
+
+   - Solo requiere Docker y un navegador web
+   - Ejecuta Docker Desktop o Docker Engine
+   - Gestiona la orquestación de contenedores
+
+2. **Contenedor de Ejecución**:
+   - Aloja todo el framework de Agent Zero
+   - Gestiona la interfaz web y los endpoints de API
+   - Maneja todas las funcionalidades principales, incluida la ejecución de código
+   - Proporciona un entorno estandarizado en todas las plataformas
+
+Esta arquitectura garantiza:
+
+- Entorno coherente entre plataformas
+- Despliegue y actualizaciones simplificados
+- Seguridad mejorada mediante contenedores
+- Menor necesidad de dependencias en el sistema host
+- Opciones de despliegue flexibles para usuarios avanzados
+
+<Note>
+  El enfoque heredado de ejecutar Agent Zero directamente en el sistema host (usando
+  Python, Conda, etc.) todavía es posible pero requiere configuración de Remote Function Calling
+  (RFC) en la página de configuración. Consulta [Instalación Completa
+  de Binarios](/docs/installation#in-depth-guide-for-full-binaries-installation)
+  para instrucciones detalladas.
+</Note>
+
+## Detalles de Implementación
+
+### Estructura de Directorios
+
+| Directorio      | Descripción                                      |
+| -------------- | ------------------------------------------------ |
+| `/docker`      | Archivos relacionados con Docker para el contenedor |
+| `/docs`        | Archivos y guías de documentación                |
+| `/instruments` | Scripts y herramientas personalizados para el entorno de ejecución |
+| `/knowledge`   | Almacenamiento de la base de conocimientos       |
+| `/logs`        | Registros de chat estilo CLI en HTML             |
+| `/memory`      | Almacenamiento persistente de la memoria de agentes |
+| `/prompts`     | Prompts del sistema y de herramientas            |
+| `/python`      | Código base central en Python:                   |
+| `/api`         | Endpoints de API e interfaces                    |
+| `/extensions`  | Extensiones modulares                            |
+| `/helpers`     | Funciones utilitarias                            |
+| `/tools`       | Implementaciones de herramientas                 |
+| `/tmp`         | Datos temporales de ejecución                    |
+| `/webui`       | Componentes de la interfaz web:                  |
+| `/css`         | Hojas de estilo                                  |
+| `/js`          | Módulos de JavaScript                            |
+| `/public`      | Recursos estáticos                               |
+| `/work_dir`    | Directorio de trabajo                            |
+
+### Archivos Clave
+
+| Archivo              | Descripción                        |
+| -------------------- | ---------------------------------- |
+| `.env`               | Configuración de entorno           |
+| `agent.py`           | Implementación principal del agente|
+| `example.env`        | Plantilla de configuración         |
+| `initialize.py`      | Inicialización del framework       |
+| `models.py`          | Proveedores de modelos y configuración |
+| `preload.py`         | Rutinas de pre-inicialización      |
+| `prepare.py`         | Preparación del entorno            |
+| `requirements.txt`   | Dependencias de Python             |
+| `run_cli.py`         | Lanzador de la CLI                 |
+| `run_ui.py`          | Lanzador de la interfaz web        |
+
+<Note>
+  Cuando se utiliza el contenedor de ejecución Docker, estos directorios se montan dentro
+  del volumen `/a0` para la persistencia de datos hasta que el contenedor se reinicie o elimine.
+</Note>
+
+## Componentes Principales
+
+La arquitectura de Agent Zero gira en torno a los siguientes componentes clave:
+
+### 1. Agentes
+
+Los actores principales dentro del framework. Los agentes reciben instrucciones, razonan, toman decisiones y utilizan herramientas para lograr sus objetivos. Operan dentro de una estructura jerárquica, donde los agentes superiores delegan tareas a los subordinados.
+
+#### Jerarquía y Comunicación de Agentes
+
+Agent Zero emplea una estructura jerárquica de agentes, donde un agente de nivel superior (a menudo el usuario) puede delegar tareas a agentes subordinados. Esta jerarquía permite descomponer tareas complejas en subtareas más manejables.
+
+La comunicación entre agentes se realiza mediante mensajes, estructurados según las plantillas de prompts. Estos mensajes típicamente incluyen:
+
+| Argumento              | Descripción                                             |
+| ---------------------- | ------------------------------------------------------- |
+| `Thoughts:`            | Cadena de pensamiento y proceso de planificación del agente |
+| `Tool name:`           | Herramienta específica utilizada por el agente          |
+| `Responses or queries:`| Resultados, comentarios o consultas de herramientas u otros agentes |
+
+#### Flujo de Interacción
+
+Un flujo de interacción típico en Agent Zero puede verse así:
+
+![Flujo de Interacción](/res/flow-01.svg)
+
+1. El usuario da una instrucción al Agente 0  
+2. El Agente 0 inicializa VectorDB y accede a la memoria  
+3. El Agente 0 analiza la instrucción y formula un plan usando el argumento `thoughts`, que puede implicar el uso de herramientas o la creación de subagentes  
+4. Si es necesario, el Agente 0 delega subtareas a agentes subordinados  
+5. Los agentes usan herramientas para ejecutar acciones, proporcionando argumentos y respuestas o consultas  
+6. Los agentes comunican los resultados y comentarios hacia arriba en la jerarquía  
+7. El Agente 0 proporciona la respuesta final al usuario  
+
+### 2. Herramientas
+
+Las herramientas son funcionalidades que los agentes pueden aprovechar. Pueden incluir desde búsquedas web y ejecución de código hasta interacción con APIs o control de software externo. Agent Zero permite definir e integrar tanto herramientas integradas como personalizadas.
+
+#### Herramientas Integradas
+
+Agent Zero incluye un conjunto de herramientas prediseñadas para ayudar a los agentes a realizar tareas de forma eficiente:
+
+| Herramienta              | Función                                                                                       |
+| ------------------------ | ---------------------------------------------------------------------------------------------- |
+| behavior_adjustment      | Agent Zero usa esta herramienta para cambiar su comportamiento según una solicitud del usuario |
+| call_subordinate         | Permite a los agentes delegar tareas a agentes subordinados                                   |
+| code_execution_tool      | Permite ejecutar código Python, Node.js y Shell en el terminal                                |
+| input                    | Permite usar el teclado para interactuar con una shell activa                                 |
+| knowledge_tool           | Permite recuperar información de la memoria, base de conocimientos o fuentes externas online  |
+| response_tool            | Permite a los agentes generar una respuesta                                                    |
+| memory_tool              | Permite guardar, cargar, eliminar y olvidar información de la memoria                         |
+| webpage_content_tool     | Permite obtener y analizar el contenido de texto de páginas web                               |
+
+#### Herramienta de Conocimiento
+
+La herramienta `knowledge_tool` usa SearXNG para buscar en la web y recuperar información. También puede buscar en la base de conocimientos local y la memoria. Devuelve un resumen que puede ser usado por el agente para tomar decisiones o responder preguntas.
+
+#### Integración con SearXNG
+
+Agent Zero ha integrado SearXNG como su herramienta de búsqueda principal, reemplazando a las anteriores (Perplexity y DuckDuckGo). Esta integración mejora la capacidad del agente para obtener información mientras garantiza privacidad y personalización.
+
+- **Búsqueda centrada en la privacidad**  
+  SearXNG es un metabuscador de código abierto que permite buscar en múltiples fuentes sin rastrear las consultas. Esta integración asegura la privacidad de los datos del usuario.
+
+- **Capacidades de búsqueda mejoradas**  
+  Acceso a múltiples tipos de contenido como imágenes, videos y noticias para una recopilación más completa.
+
+- **Mecanismo de respaldo**  
+  Si SearXNG no devuelve resultados satisfactorios, Agent Zero puede usar fuentes alternativas o métodos secundarios.
+
+<Note>
+  La Herramienta de Conocimiento está diseñada para funcionar tanto con búsquedas en línea
+  usando SearXNG como con consultas a la base de conocimientos local, proporcionando un
+  sistema integral de recuperación de información.
+</Note>
+
+#### Herramientas Personalizadas
+
+Los usuarios pueden crear herramientas personalizadas para extender las capacidades de Agent Zero. Se integran definiendo una especificación y un prompt en `/prompts/$FOLDERNAME/agent.system.tool.$TOOLNAME.md`.
+
+Pasos:
+
+1. Crear `agent.system.tool.$TOOL_NAME.md` en `prompts/$SUBDIR`
+2. Añadir referencia en `agent.system.tools.md`
+3. Si es necesario, implementar la clase en `python/tools` usando la clase base `Tool`
+4. Seguir los patrones existentes para mantener coherencia
+
+<Note>
+  Las herramientas siempre están presentes en el prompt del sistema, por lo tanto deben ser mínimas.
+  Para ahorrar tokens, usa el [módulo de Instrumentos](#adding-instruments) para ejecutar scripts personalizados.
+</Note>
+
+### 3. Sistema de Memoria
+
+El sistema de memoria es un componente crítico de Agent Zero, que permite al agente aprender y adaptarse a partir de interacciones pasadas. Funciona con un modelo híbrido donde parte de la memoria es gestionada automáticamente por el framework, y los usuarios también pueden ingresar y extraer información manualmente.
+
+#### Estructura de la Memoria
+
+La memoria se categoriza en cuatro áreas distintas:
+
+- **Almacenamiento y recuperación** de información proporcionada por el usuario (por ejemplo, nombres, claves API)
+- **Fragmentos**: Contiene piezas de información de conversaciones anteriores, actualizadas automáticamente
+- **Soluciones**: Almacena soluciones exitosas de interacciones anteriores para referencia futura
+- **Metadatos**: Cada entrada incluye metadatos (ID, marcas de tiempo), permitiendo filtrado y búsqueda eficiente
+
+#### Historial de Mensajes y Resumen
+
+Agent Zero emplea un sistema sofisticado de historial y resumen de mensajes para mantener el contexto de manera efectiva, optimizando el uso de memoria. Este sistema gestiona dinámicamente el flujo de información, asegurando que los detalles relevantes estén disponibles y que se respeten los límites del contexto.
+
+- **Extracción de Contexto:** El sistema identifica la información clave de mensajes anteriores vital para discusiones en curso. Este proceso imita cómo los humanos recuerdan recuerdos importantes.
+- **Proceso de Resumen:** Usando procesamiento de lenguaje natural, Agent Zero condensa información en resúmenes concisos. Esto permite recordar hechos clave rápidamente.
+- **Relevancia Contextual:** El contexto resumido se prioriza según su relevancia con el tema actual.
+
+**Detalles de Implementación:**
+
+- **Resúmenes de Mensajes**: Cada mensaje se resume en un formato estructurado para reducir el uso de tokens.
+- **Compresión Dinámica**:
+  - Los mensajes recientes se mantienen en su forma original.
+  - Los mensajes antiguos se comprimen gradualmente.
+  - Varios niveles de compresión optimizan el uso del contexto.
+  - Los mensajes originales se preservan por separado.
+- **Optimización del Contexto**:
+  - Actúa como memoria a corto plazo casi infinita por conversación.
+  - Ajusta dinámicamente los niveles de compresión según el espacio disponible.
+- **Resúmenes por Bloque o Tema**:
+  - Agrupa mensajes relacionados en bloques temáticos.
+  - Genera resúmenes concisos manteniendo el contexto clave.
+  - Facilita la navegación en historiales largos.
+  - Preserva conexiones semánticas entre temas relacionados.
+
+Al ajustar dinámicamente las ventanas de contexto y resumir interacciones pasadas, Agent Zero mejora la eficiencia y la experiencia del usuario. Este enfoque refleja procesos cognitivos humanos, haciendo la interacción con la IA más natural y efectiva.
+
+<Note>
+  Para maximizar la efectividad del resumen de contexto, los usuarios deben proporcionar
+  instrucciones claras y específicas durante la interacción. Esto ayuda a Agent Zero
+  a entender qué detalles son más importantes para retener.
+</Note>
+
+### 4. Prompts
+
+El directorio `prompts` contiene archivos Markdown que controlan el comportamiento del agente y su comunicación. El archivo más importante es `agent.system.main.md`, que actúa como núcleo central y referencia otros prompts.
+
+#### Archivos de Prompt Principales
+
+| Archivo Prompt                      | Descripción                                          |
+| ---------------------------------- | --------------------------------------------------- |
+| agent.system.main.role.md          | Define el rol general y capacidades del agente      |
+| agent.system.main.communication.md | Especifica cómo debe comunicarse el agente          |
+| agent.system.main.solving.md       | Describe el enfoque del agente para resolver tareas |
+| agent.system.main.tips.md          | Proporciona consejos o guías adicionales            |
+| agent.system.main.behaviour.md     | Controla los ajustes de comportamiento dinámicos    |
+| agent.system.main.environment.md   | Define el contexto del entorno de ejecución         |
+| agent.system.tools.md              | Organiza y llama a los archivos de prompt de herramientas |
+| agent.system.tool.\*.md            | Archivos individuales de prompt para cada herramienta|
+
+#### Organización de Prompts
+
+- **Prompts por Defecto**: Ubicados en `prompts/default/`, configuración base
+- **Prompts Personalizados**: Se colocan en subdirectorios personalizados (ej. `prompts/mi-custom/`)
+- **Archivos de Comportamiento**: Almacenados en memoria como `behaviour.md`
+- **Prompts de Herramientas**: Organizados por herramienta para modularidad
+
+#### Prompts Personalizados
+
+1. Crear directorio en `prompts/` (ej. `mis-prompts`)
+2. Copiar y modificar archivos necesarios desde `prompts/default/`
+3. Agent Zero combinará tus archivos con los predeterminados
+4. Selecciona tus prompts personalizados en la página de configuración (sección Agent Config)
+
+#### Sistema de Comportamiento Dinámico
+
+- **Ajuste de Comportamiento**:
+  - Los agentes pueden modificar su comportamiento en tiempo real según instrucciones del usuario
+  - Los cambios se integran automáticamente en el prompt del sistema
+  - Las reglas se fusionan inteligentemente, evitando duplicados o conflictos
+
+- **Componentes de Gestión del Comportamiento**:
+  - `behaviour_adjustment.py`: Herramienta principal para actualizar el comportamiento
+  - `_20_behaviour_prompt.py`: Extensión que inyecta reglas al prompt
+  - Reglas personalizadas guardadas en `behaviour.md` del directorio de memoria
+
+- **Proceso de Actualización**:
+  1. El usuario solicita cambios de comportamiento (ej. "responde en español neutro")
+  2. El sistema identifica las instrucciones de comportamiento en la conversación
+  3. Las nuevas reglas se fusionan con las existentes
+  4. El comportamiento actualizado se aplica de inmediato
+
+![Ajuste de Comportamiento](/res/ui-behavior-change-chat.png)
+
+- **Integración con el Prompt del Sistema**:
+  - Las reglas se inyectan al inicio del prompt del sistema
+  - Formato estructurado en Markdown
+  - Se aplican sin interrumpir otros componentes
+  - Se mantiene separación entre funcionalidad central y comportamiento
+
+<Note>
+  Puedes personalizar cualquiera de estos archivos. Agent Zero usará los archivos
+  en tu `prompts_subdir` si existen; de lo contrario, usará los de `prompts/default`.
+</Note>
+
+<Note type="tip">
+  El sistema de comportamiento permite ajustes dinámicos sin modificar los
+  archivos base. Los cambios persisten entre sesiones sin afectar la funcionalidad central.
+</Note>
+
+### 5. Conocimiento
+
+El conocimiento se refiere a la información y datos proporcionados por el usuario que los agentes pueden aprovechar:
+
+- **Conocimiento Personalizado**: Agrega archivos manualmente en el directorio `/knowledge/custom/main` o mediante el botón "Importar Conocimiento" en la interfaz.
+
+  - Formatos soportados: `.txt`, `.pdf`, `.csv`, `.html`, `.json`, `.md`
+  - Importados e indexados automáticamente
+  - Admite expansión de formatos
+
+- **Base de Conocimientos**:
+  - Puede incluir PDFs, bases de datos, libros, documentación
+  - El directorio `/docs` se incluye automáticamente
+  - Se utiliza para responder preguntas y tomar decisiones
+  - Compatible con tareas aumentadas por RAG
+
+### 6. Instrumentos
+
+Los instrumentos ofrecen una forma de agregar funcionalidades personalizadas a Agent Zero sin añadir tokens al prompt del sistema:
+
+- Almacenados en la memoria a largo plazo de Agent Zero
+- Número ilimitado de instrumentos disponibles
+- Recuperados por el agente cuando se necesitan
+- Pueden modificar el comportamiento del agente con nuevos procedimientos
+- Llamadas a funciones o scripts para integrarse con otros sistemas
+- Los scripts se ejecutan dentro del contenedor Docker
+
+#### Añadir Instrumentos
+
+1. Crear una carpeta en `instruments/custom` (sin espacios en el nombre)
+2. Agregar un archivo `.md` de descripción para la interfaz
+3. Agregar un script `.sh` (u otro ejecutable) como implementación
+4. El agente detectará y usará automáticamente el instrumento
+
+### 7. Extensiones
+
+Las extensiones son una característica poderosa de Agent Zero, diseñadas para mantener el código base limpio y organizado, al tiempo que permiten flexibilidad y modularidad.
+
+#### Estructura
+
+Las extensiones se encuentran en el directorio `python/extensions`:
+
+- **Organización en Carpetas**: Las extensiones están en subcarpetas correspondientes a diferentes aspectos del ciclo de mensajes del agente
+- **Orden de Ejecución**: Los archivos se ejecutan en orden alfabético para un comportamiento predecible
+- **Convención de Nombres**: Los archivos comienzan con números para controlar el orden
+- **Modularidad**: Cada extensión se enfoca en una funcionalidad específica
+
+#### Tipos
+
+- **Prompts del Ciclo de Mensajes**: Manejan mensajes del sistema y construcción del historial
+- **Gestión de Memoria**: Manejan recuperación y memorización de soluciones
+- **Integración con Sistemas**: Gestionan la interacción con sistemas externos
+
+#### Añadir Extensiones
+
+1. Crear archivo Python en la subcarpeta apropiada de `python/extensions`
+2. Seguir la convención de nombres para el orden de ejecución (empezar con número)
+3. Implementar la funcionalidad siguiendo los patrones existentes
+4. Asegurar compatibilidad con el sistema principal
+5. Probar completamente antes de desplegar
+
+<Note>
+  Considera contribuir con componentes personalizados útiles al repositorio principal. Consulta
+  [Contribuciones](/docs/contribution) para más información.
+</Note>

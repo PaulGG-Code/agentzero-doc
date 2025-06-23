@@ -11,11 +11,16 @@ const computedFields: ComputedFields = {
     type: 'string',
     resolve: (post: any) => {
       const path = post._raw.flattenedPath;
-      // Check if the path starts with a language code (fr/)
       if (path.startsWith('fr/')) {
-        return `/fr/docs/${path.substring(3)}`; // Remove 'fr/' prefix
+        return `/fr/docs/${path.substring(3)}`;
       }
-      return `/en/docs/${path}`; // Add 'en/' prefix for English
+      if (path.startsWith('it/')) {
+        return `/it/docs/${path.substring(3)}`;
+      }
+      if (path.startsWith('es/')) {
+        return `/es/docs/${path.substring(3)}`;
+      }
+      return `/en/docs/${path}`;
     },
   },
   slug: {
@@ -26,7 +31,10 @@ const computedFields: ComputedFields = {
     type: 'string',
     resolve: (doc: any) => {
       const path = doc._raw.flattenedPath;
-      return path.startsWith('fr/') ? 'fr' : 'en';
+      if (path.startsWith('fr/')) return 'fr';
+      if (path.startsWith('it/')) return 'it';
+      if (path.startsWith('es/')) return 'es';
+      return 'en';
     },
   },
   headings: {
@@ -34,7 +42,6 @@ const computedFields: ComputedFields = {
     resolve: async (doc: any) => {
       const regXHeader = /^(###|##|#)\s(.+)/;
       const unescapedContent = doc.body.raw.replace(/\\n/g, '\n');
-
       const headings = unescapedContent
         .split('\n')
         .map((line: any) => {
